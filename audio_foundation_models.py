@@ -113,7 +113,7 @@ class T2A:
     def __init__(self, device):
         print("Initializing Make-An-Audio to %s" % device)
         self.device = device
-        self.sampler = initialize_model('configs/text-to-audio/txt2audio_args.yaml', 'useful_ckpts/ta40multi_epoch=000085.ckpt', device=device) 
+        self.sampler = initialize_model('text_to_audio/Make_An_Audio/configs/text-to-audio/txt2audio_args.yaml', 'text_to_audio/Make_An_Audio/useful_ckpts/ta40multi_epoch=000085.ckpt', device=device) 
         self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio/vocoder/logs/bigv16k53w',device=device)
 
     def txt2audio(self, text, seed = 55, scale = 1.5, ddim_steps = 100, n_samples = 3, W = 624, H = 80):
@@ -160,8 +160,8 @@ class I2A:
     def __init__(self, device):
         print("Initializing Make-An-Audio-Image to %s" % device)
         self.device = device
-        self.sampler = initialize_model('text_to_audio/Make_An_Audio_img/configs/img_to_audio/img2audio_args.yaml', 'text_to_audio/Make_An_Audio_img/useful_ckpts/ta54_epoch=000216.ckpt', device=device)
-        self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio_img/vocoder/logs/bigv16k53w',device=device)
+        self.sampler = initialize_model('text_to_audio/Make_An_Audio/configs/img_to_audio/img2audio_args.yaml', 'text_to_audio/Make_An_Audio/useful_ckpts/ta54_epoch=000216.ckpt', device=device)
+        self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio/vocoder/logs/bigv16k53w',device=device)
     def img2audio(self, image, seed = 55, scale = 3, ddim_steps = 100, W = 624, H = 80):
         SAMPLE_RATE = 16000
         n_samples = 1 # only support 1 sample
@@ -224,7 +224,7 @@ class T2S:
         print("Initializing DiffSinger to %s" % device)
         self.device = device
         self.exp_name = 'checkpoints/0831_opencpop_ds1000'
-        self.config= 'text_to_sing/DiffSinger/usr/configs/midi/e2e/opencpop/ds1000.yaml'
+        self.config= 'NeuralSeq/egs/egs_bases/svs/midi/e2e/opencpop/ds1000.yaml'
         self.set_model_hparams()
         self.pipe = DiffSingerE2EInfer(self.hp, device)
         self.default_inp = {
@@ -259,7 +259,7 @@ class TTS_OOD:
         print("Initializing GenerSpeech to %s" % device)
         self.device = device
         self.exp_name = 'checkpoints/GenerSpeech'
-        self.config = 'text_to_sing/DiffSinger/modules/GenerSpeech/config/generspeech.yaml'
+        self.config = 'NeuralSeq/modules/GenerSpeech/config/generspeech.yaml'
         self.set_model_hparams()
         self.pipe = GenerSpeechInfer(self.hp, device)
 
@@ -291,7 +291,7 @@ class Inpaint:
     def __init__(self, device):
         print("Initializing Make-An-Audio-inpaint to %s" % device)
         self.device = device
-        self.sampler = initialize_model_inpaint('text_to_audio/Make_An_Audio_inpaint/configs/inpaint/txt2audio_args.yaml', 'text_to_audio/Make_An_Audio_inpaint/useful_ckpts/inpaint7_epoch00047.ckpt')
+        self.sampler = initialize_model_inpaint('text_to_audio/Make_An_Audio/configs/inpaint/txt2audio_args.yaml', 'text_to_audio/Make_An_Audio/useful_ckpts/inpaint7_epoch00047.ckpt')
         self.vocoder = VocoderBigVGAN('./vocoder/logs/bigv16k53w',device=device)
         self.cmap_transform = matplotlib.cm.viridis
     def make_batch_sd(self, mel, mask, num_samples=1):
