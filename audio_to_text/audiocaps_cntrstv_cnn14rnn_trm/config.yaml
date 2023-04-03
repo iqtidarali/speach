@@ -1,0 +1,23 @@
+model:
+    encoder:
+        type: Cnn14RnnEncoder
+        args:
+            sample_rate: 32000
+            pretrained: ./audio_to_text/pretrained_feature_extractors/contrastive_pretrain_cnn14_bertm.pth
+            freeze_cnn: True
+            freeze_cnn_bn: True
+            bidirectional: True
+            dropout: 0.5
+            hidden_size: 256
+            num_layers: 3
+    decoder:
+        type: TransformerDecoder
+        args:
+            attn_emb_dim: 512
+            dropout: 0.2
+            emb_dim: 256
+            fc_emb_dim: 512
+            nlayers: 2
+    type: TransformerModel
+    args: {}
+
