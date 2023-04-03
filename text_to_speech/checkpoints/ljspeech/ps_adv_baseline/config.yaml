@@ -1,0 +1,280 @@
+accumulate_grad_batches: 1
+add_word_pos: true
+amp: false
+audio_num_mel_bins: 80
+audio_sample_rate: 22050
+base_config:
+- egs/datasets/audio/lj/base_text2mel.yaml
+- egs/egs_bases/tts/ps_flow.yaml
+binarization_args:
+  min_sil_duration: 0.1
+  shuffle: false
+  test_range:
+  - 0
+  - 523
+  train_range:
+  - 871
+  - -1
+  trim_eos_bos: false
+  valid_range:
+  - 523
+  - 871
+  with_align: true
+  with_f0: true
+  with_f0cwt: false
+  with_linear: false
+  with_spk_embed: false
+  with_wav: false
+binarizer_cls: data_gen.tts.base_binarizer.BaseBinarizer
+binary_data_dir: data/binary/ljspeech_clipspeech
+check_val_every_n_epoch: 10
+clip_grad_norm: 1
+clip_grad_value: 0
+conv_use_pos: false
+debug: false
+dec_dilations:
+- 1
+- 1
+- 1
+- 1
+dec_ffn_kernel_size: 9
+dec_inp_add_noise: false
+dec_kernel_size: 5
+dec_layers: 4
+dec_post_net_kernel: 3
+decoder_rnn_dim: 0
+decoder_type: conv
+detach_postflow_input: true
+disc_interval: 1
+disc_lr: 0.0001
+disc_norm: in
+disc_reduction: stack
+disc_start_steps: 0
+disc_win_num: 3
+discriminator_optimizer_params:
+  eps: 1.0e-06
+  weight_decay: 0.0
+discriminator_scheduler_params:
+  gamma: 0.5
+  step_size: 40000
+dropout: 0.0
+ds_name: ljspeech
+ds_workers: 1
+dur_level: word
+dur_predictor_kernel: 5
+dur_predictor_layers: 3
+enc_dec_norm: ln
+enc_dilations:
+- 1
+- 1
+- 1
+- 1
+enc_ffn_kernel_size: 5
+enc_kernel_size: 5
+enc_layers: 4
+enc_post_net_kernel: 3
+enc_pre_ln: true
+enc_prenet: true
+encoder_K: 8
+encoder_type: rel_fft
+endless_ds: true
+eval_max_batches: -1
+f0_max: 600
+f0_min: 80
+ffn_act: gelu
+ffn_hidden_size: 768
+fft_size: 1024
+fmax: 7600
+fmin: 80
+frames_multiple: 4
+fvae_dec_n_layers: 4
+fvae_decoder_type: conv
+fvae_enc_dec_hidden: 192
+fvae_enc_n_layers: 8
+fvae_encoder_type: conv
+fvae_kernel_size: 5
+fvae_noise_scale: 1.0
+fvae_strides: 4
+gen_dir_name: ''
+griffin_lim_iters: 30
+hidden_size: 192
+hop_size: 256
+infer: false
+infer_post_glow: true
+kl_min: 0.0
+kl_start_steps: 10000
+lambda_commit: 0.25
+lambda_energy: 0.1
+lambda_f0: 1.0
+lambda_kl: 1.0
+lambda_mel_adv: 0.05
+lambda_ph_dur: 0.1
+lambda_sent_dur: 0.0
+lambda_uv: 1.0
+lambda_word_dur: 1.0
+latent_size: 16
+layers_in_block: 2
+load_ckpt: ''
+loud_norm: false
+lr: 0.4
+max_epochs: 1000
+max_frames: 1548
+max_input_tokens: 1550
+max_sentences: 64
+max_tokens: 40000
+max_updates: 160001
+max_valid_sentences: 1
+max_valid_tokens: 60000
+mel_disc_hidden_size: 128
+mel_losses: l1:0.5|ssim:0.5
+mel_vmax: 1.5
+mel_vmin: -6
+min_frames: 0
+noise_scale: 0.8
+num_cache: 20000
+num_ckpt_keep: 2
+num_heads: 2
+num_sanity_val_steps: 0
+num_spk: 1
+num_valid_plots: 30
+optimizer_adam_beta1: 0.9
+optimizer_adam_beta2: 0.98
+out_wav_norm: false
+pe_ffn_padding: SAME
+pe_hidden_size: 256
+pe_predictor_hidden: -1
+pe_predictor_kernel: 5
+pitch_extractor: parselmouth
+pitch_extractor_ckpt: checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt
+pitch_key: pitch
+pitch_norm: log
+pitch_type: frame
+post_flow_lr: 0.001
+post_glow_hidden: 192
+post_glow_kernel_size: 3
+post_glow_n_block_layers: 3
+post_glow_n_blocks: 12
+post_glow_training_start: 160000
+post_share_cond_layers: false
+posterior_start_steps: 0
+predictor_dropout: 0.2
+predictor_grad: 0.02
+predictor_hidden: -1
+predictor_kernel: 5
+predictor_layers: 5
+preprocess_args:
+  add_eos_bos: true
+  mfa_group_shuffle: false
+  mfa_offset: 0.02
+  nsample_per_mfa_group: 1000
+  reset_phone_dict: true
+  reset_word_dict: true
+  save_sil_mask: true
+  txt_processor: en
+  use_mfa: true
+  vad_max_silence_length: 12
+  wav_processors: []
+  with_phsep: true
+preprocess_cls: text_to_speech.egs.datasets.audio.lj.preprocess.LJPreprocess
+print_nan_grads: false
+prior_flow_hidden: 64
+prior_flow_kernel_size: 3
+prior_flow_n_blocks: 4
+processed_data_dir: data/processed/ljspeech
+profile_infer: false
+raw_data_dir: data/raw/LJSpeech-1.1
+ref_norm_layer: bn
+rename_tmux: true
+resume_from_checkpoint: 0
+save_best: false
+save_codes:
+- tasks
+- modules
+- egs
+- research
+save_f0: false
+save_gt: true
+scheduler: rsqrt
+seed: 1234
+share_wn_layers: 4
+sigmoid_scale: false
+sort_by_len: true
+task_cls: research.clipspeech.tasks.ps_adv.PortaSpeechAdvTask
+tb_log_interval: 100
+test_ids:
+- 0
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
+- 7
+- 8
+- 9
+- 10
+- 11
+- 12
+- 13
+- 14
+- 15
+- 16
+- 17
+- 18
+- 19
+- 68
+- 70
+- 74
+- 87
+- 110
+- 172
+- 190
+- 215
+- 231
+- 294
+- 316
+- 324
+- 402
+- 422
+- 485
+- 500
+- 505
+- 508
+- 509
+- 519
+test_input_yaml: ''
+test_num: 100
+test_set_name: test
+text_encoder_postnet: true
+train_set_name: train
+train_sets: ''
+two_stage: true
+use_cond_proj: false
+use_fvae: true
+use_gt_dur: false
+use_gt_f0: false
+use_latent_cond: false
+use_pitch_embed: false
+use_pos_embed: true
+use_post_flow: true
+use_prior_flow: true
+use_spk_embed: false
+use_spk_id: false
+use_txt_cond: true
+use_uv: true
+use_word_encoder: false
+use_word_input: false
+val_check_interval: 1
+valid_infer_interval: 1
+valid_monitor_key: val_loss
+valid_monitor_mode: min
+valid_set_name: valid
+vocoder: HifiGAN
+vocoder_ckpt: checkpoints/hifi_lj
+warmup_updates: 8000
+weight_decay: 0
+win_size: 1024
+word_dict_size: 10000
+word_enc_layers: 4
+word_encoder_type: rel_fft
+work_dir: checkpoints/ljspeech/ps_adv_baseline

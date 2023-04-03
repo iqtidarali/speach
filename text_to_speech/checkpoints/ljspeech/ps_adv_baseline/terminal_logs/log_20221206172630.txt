@@ -1,0 +1,625 @@
+| Copied codes to checkpoints/1206_lj/ps_adv_baseline/codes/20221206172630.
+| model Arch:  PortaSpeech(
+  (dur_predictor): DurationPredictor(
+    (conv): ModuleList(
+      (0): Sequential(
+        (0): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (1): ReLU()
+        (2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+        (3): Dropout(p=0.2, inplace=False)
+      )
+      (1): Sequential(
+        (0): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (1): ReLU()
+        (2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+        (3): Dropout(p=0.2, inplace=False)
+      )
+      (2): Sequential(
+        (0): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (1): ReLU()
+        (2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+        (3): Dropout(p=0.2, inplace=False)
+      )
+    )
+    (linear): Sequential(
+      (0): Linear(in_features=192, out_features=1, bias=True)
+      (1): Softplus(beta=1, threshold=20)
+    )
+  )
+  (length_regulator): LengthRegulator()
+  (ph_encoder): RelTransformerEncoder(
+    (emb): Embedding(79, 192, padding_idx=0)
+    (pre): ConvReluNorm(
+      (conv_layers): ModuleList(
+        (0): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (2): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+      )
+      (norm_layers): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+      )
+      (relu_drop): Sequential(
+        (0): ReLU()
+        (1): Dropout(p=0, inplace=False)
+      )
+      (proj): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+    )
+    (encoder): Encoder(
+      (drop): Dropout(p=0.0, inplace=False)
+      (attn_layers): ModuleList(
+        (0): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (1): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (2): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (3): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (norm_layers_1): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+        (3): LayerNorm()
+      )
+      (ffn_layers): ModuleList(
+        (0): FFN(
+          (conv_1): Conv1d(192, 768, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(768, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (1): FFN(
+          (conv_1): Conv1d(192, 768, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(768, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (2): FFN(
+          (conv_1): Conv1d(192, 768, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(768, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (3): FFN(
+          (conv_1): Conv1d(192, 768, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(768, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (norm_layers_2): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+        (3): LayerNorm()
+      )
+      (last_ln): LayerNorm()
+    )
+  )
+  (ph2word_encoder): RelTransformerEncoder(
+    (pre): ConvReluNorm(
+      (conv_layers): ModuleList(
+        (0): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (2): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+      )
+      (norm_layers): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+      )
+      (relu_drop): Sequential(
+        (0): ReLU()
+        (1): Dropout(p=0, inplace=False)
+      )
+      (proj): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+    )
+    (encoder): Encoder(
+      (drop): Dropout(p=0.0, inplace=False)
+      (attn_layers): ModuleList(
+        (0): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (1): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (2): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (3): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (norm_layers_1): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+        (3): LayerNorm()
+      )
+      (ffn_layers): ModuleList(
+        (0): FFN(
+          (conv_1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (1): FFN(
+          (conv_1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (2): FFN(
+          (conv_1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (3): FFN(
+          (conv_1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (norm_layers_2): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+        (3): LayerNorm()
+      )
+      (last_ln): LayerNorm()
+    )
+  )
+  (sin_pos): SinusoidalPosEmb()
+  (enc_pos_proj): Linear(in_features=384, out_features=192, bias=True)
+  (dec_query_proj): Linear(in_features=384, out_features=192, bias=True)
+  (dec_res_proj): Linear(in_features=384, out_features=192, bias=True)
+  (attn): MultiheadAttention(
+    (out_proj): Linear(in_features=192, out_features=192, bias=False)
+  )
+  (text_encoder_postnet): ConvBlocks(
+    (res_blocks): Sequential(
+      (0): ResidualBlock(
+        (blocks): ModuleList(
+          (0): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+          (1): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (1): ResidualBlock(
+        (blocks): ModuleList(
+          (0): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+          (1): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (2): ResidualBlock(
+        (blocks): ModuleList(
+          (0): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+          (1): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+    )
+    (last_norm): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+    (post_net1): Conv1d(192, 192, kernel_size=(3,), stride=(1,), padding=(1,))
+  )
+  (fvae): FVAE(
+    (g_pre_net): Sequential(
+      (0): Conv1d(192, 192, kernel_size=(8,), stride=(4,), padding=(2,))
+    )
+    (encoder): FVAEEncoder(
+      (pre_net): Sequential(
+        (0): Conv1d(80, 192, kernel_size=(8,), stride=(4,), padding=(2,))
+      )
+      (nn): ConditionalConvBlocks(
+        (res_blocks): Sequential(
+          (0): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (1): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (2): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (3): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (4): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (5): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (6): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (7): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+        )
+        (last_norm): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+        (post_net1): Conv1d(192, 192, kernel_size=(3,), stride=(1,), padding=(1,))
+        (g_prenet): Conv1d(192, 192, kernel_size=(3,), stride=(1,), padding=(1,))
+      )
+      (out_proj): Conv1d(192, 32, kernel_size=(1,), stride=(1,))
+    )
+    (prior_flow): ResFlow(
+      (flows): ModuleList(
+        (0): CouplingLayer(
+          (pre): Conv1d(8, 64, kernel_size=(1,), stride=(1,))
+          (enc): WN(
+            (in_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (1): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (2): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (3): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+            )
+            (res_skip_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (1): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (2): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (3): Conv1d(64, 64, kernel_size=(1,), stride=(1,))
+            )
+            (drop): Dropout(p=0, inplace=False)
+            (cond_layer): Conv1d(192, 512, kernel_size=(1,), stride=(1,))
+          )
+          (post): Conv1d(64, 8, kernel_size=(1,), stride=(1,))
+        )
+        (1): FlipLayer()
+        (2): CouplingLayer(
+          (pre): Conv1d(8, 64, kernel_size=(1,), stride=(1,))
+          (enc): WN(
+            (in_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (1): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (2): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (3): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+            )
+            (res_skip_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (1): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (2): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (3): Conv1d(64, 64, kernel_size=(1,), stride=(1,))
+            )
+            (drop): Dropout(p=0, inplace=False)
+            (cond_layer): Conv1d(192, 512, kernel_size=(1,), stride=(1,))
+          )
+          (post): Conv1d(64, 8, kernel_size=(1,), stride=(1,))
+        )
+        (3): FlipLayer()
+        (4): CouplingLayer(
+          (pre): Conv1d(8, 64, kernel_size=(1,), stride=(1,))
+          (enc): WN(
+            (in_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (1): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (2): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (3): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+            )
+            (res_skip_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (1): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (2): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (3): Conv1d(64, 64, kernel_size=(1,), stride=(1,))
+            )
+            (drop): Dropout(p=0, inplace=False)
+            (cond_layer): Conv1d(192, 512, kernel_size=(1,), stride=(1,))
+          )
+          (post): Conv1d(64, 8, kernel_size=(1,), stride=(1,))
+        )
+        (5): FlipLayer()
+        (6): CouplingLayer(
+          (pre): Conv1d(8, 64, kernel_size=(1,), stride=(1,))
+          (enc): WN(
+            (in_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (1): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (2): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (3): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+            )
+            (res_skip_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (1): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (2): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (3): Conv1d(64, 64, kernel_size=(1,), stride=(1,))
+            )
+            (drop): Dropout(p=0, inplace=False)
+            (cond_layer): Conv1d(192, 512, kernel_size=(1,), stride=(1,))
+          )
+          (post): Conv1d(64, 8, kernel_size=(1,), stride=(1,))
+        )
+        (7): FlipLayer()
+      )
+    )
+    (decoder): FVAEDecoder(
+      (pre_net): Sequential(
+        (0): ConvTranspose1d(16, 192, kernel_size=(4,), stride=(4,))
+      )
+      (nn): ConditionalConvBlocks(
+        (res_blocks): Sequential(
+          (0): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (1): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (2): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (3): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+        )
+        (last_norm): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+        (post_net1): Conv1d(192, 192, kernel_size=(3,), stride=(1,), padding=(1,))
+        (g_prenet): Conv1d(192, 192, kernel_size=(3,), stride=(1,), padding=(1,))
+      )
+      (out_proj): Conv1d(192, 80, kernel_size=(1,), stride=(1,))
+    )
+  )
+  (word_pos_proj): Linear(in_features=192, out_features=192, bias=True)
+)
+| model Trainable Parameters: 23.020M
+| dur_predictor Trainable Parameters: 0.555M
+| length_regulator Trainable Parameters: 0.000M
+| ph_encoder Trainable Parameters: 4.753M
+| ph2word_encoder Trainable Parameters: 2.081M
+| sin_pos Trainable Parameters: 0.000M
+| enc_pos_proj Trainable Parameters: 0.074M
+| dec_query_proj Trainable Parameters: 0.074M
+| dec_res_proj Trainable Parameters: 0.074M
+| attn Trainable Parameters: 0.147M
+| text_encoder_postnet Trainable Parameters: 2.771M
+| fvae Trainable Parameters: 12.453M
+| word_pos_proj Trainable Parameters: 0.037M
+| fvae.g_pre_net Trainable Parameters: 0.295M
+| fvae.encoder Trainable Parameters: 7.444M
+| fvae.prior_flow Trainable Parameters: 0.917M
+| fvae.decoder Trainable Parameters: 3.796M

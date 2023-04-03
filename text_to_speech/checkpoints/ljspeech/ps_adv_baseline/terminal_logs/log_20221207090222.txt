@@ -1,0 +1,679 @@
+| Copied codes to checkpoints/1206_lj/ps_adv_baseline/codes/20221207090222.
+| model Arch:  PortaSpeech(
+  (dur_predictor): DurationPredictor(
+    (conv): ModuleList(
+      (0): Sequential(
+        (0): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (1): ReLU()
+        (2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+        (3): Dropout(p=0.2, inplace=False)
+      )
+      (1): Sequential(
+        (0): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (1): ReLU()
+        (2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+        (3): Dropout(p=0.2, inplace=False)
+      )
+      (2): Sequential(
+        (0): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (1): ReLU()
+        (2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+        (3): Dropout(p=0.2, inplace=False)
+      )
+    )
+    (linear): Sequential(
+      (0): Linear(in_features=192, out_features=1, bias=True)
+      (1): Softplus(beta=1, threshold=20)
+    )
+  )
+  (length_regulator): LengthRegulator()
+  (ph_encoder): RelTransformerEncoder(
+    (emb): Embedding(79, 192, padding_idx=0)
+    (pre): ConvReluNorm(
+      (conv_layers): ModuleList(
+        (0): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (2): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+      )
+      (norm_layers): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+      )
+      (relu_drop): Sequential(
+        (0): ReLU()
+        (1): Dropout(p=0, inplace=False)
+      )
+      (proj): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+    )
+    (encoder): Encoder(
+      (drop): Dropout(p=0.0, inplace=False)
+      (attn_layers): ModuleList(
+        (0): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (1): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (2): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (3): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (norm_layers_1): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+        (3): LayerNorm()
+      )
+      (ffn_layers): ModuleList(
+        (0): FFN(
+          (conv_1): Conv1d(192, 768, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(768, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (1): FFN(
+          (conv_1): Conv1d(192, 768, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(768, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (2): FFN(
+          (conv_1): Conv1d(192, 768, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(768, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (3): FFN(
+          (conv_1): Conv1d(192, 768, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(768, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (norm_layers_2): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+        (3): LayerNorm()
+      )
+      (last_ln): LayerNorm()
+    )
+  )
+  (ph2word_encoder): RelTransformerEncoder(
+    (pre): ConvReluNorm(
+      (conv_layers): ModuleList(
+        (0): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+        (2): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+      )
+      (norm_layers): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+      )
+      (relu_drop): Sequential(
+        (0): ReLU()
+        (1): Dropout(p=0, inplace=False)
+      )
+      (proj): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+    )
+    (encoder): Encoder(
+      (drop): Dropout(p=0.0, inplace=False)
+      (attn_layers): ModuleList(
+        (0): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (1): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (2): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (3): MultiHeadAttention(
+          (conv_q): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_k): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_v): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (conv_o): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (norm_layers_1): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+        (3): LayerNorm()
+      )
+      (ffn_layers): ModuleList(
+        (0): FFN(
+          (conv_1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (1): FFN(
+          (conv_1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (2): FFN(
+          (conv_1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+        (3): FFN(
+          (conv_1): Conv1d(192, 192, kernel_size=(5,), stride=(1,), padding=(2,))
+          (conv_2): Conv1d(192, 192, kernel_size=(1,), stride=(1,))
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (norm_layers_2): ModuleList(
+        (0): LayerNorm()
+        (1): LayerNorm()
+        (2): LayerNorm()
+        (3): LayerNorm()
+      )
+      (last_ln): LayerNorm()
+    )
+  )
+  (sin_pos): SinusoidalPosEmb()
+  (enc_pos_proj): Linear(in_features=384, out_features=192, bias=True)
+  (dec_query_proj): Linear(in_features=384, out_features=192, bias=True)
+  (dec_res_proj): Linear(in_features=384, out_features=192, bias=True)
+  (attn): MultiheadAttention(
+    (out_proj): Linear(in_features=192, out_features=192, bias=False)
+  )
+  (text_encoder_postnet): ConvBlocks(
+    (res_blocks): Sequential(
+      (0): ResidualBlock(
+        (blocks): ModuleList(
+          (0): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+          (1): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (1): ResidualBlock(
+        (blocks): ModuleList(
+          (0): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+          (1): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+      (2): ResidualBlock(
+        (blocks): ModuleList(
+          (0): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+          (1): Sequential(
+            (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+            (2): LambdaLayer()
+            (3): GELU(approximate=none)
+            (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+          )
+        )
+      )
+    )
+    (last_norm): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+    (post_net1): Conv1d(192, 192, kernel_size=(3,), stride=(1,), padding=(1,))
+  )
+  (fvae): FVAE(
+    (g_pre_net): Sequential(
+      (0): Conv1d(192, 192, kernel_size=(8,), stride=(4,), padding=(2,))
+    )
+    (encoder): FVAEEncoder(
+      (pre_net): Sequential(
+        (0): Conv1d(80, 192, kernel_size=(8,), stride=(4,), padding=(2,))
+      )
+      (nn): ConditionalConvBlocks(
+        (res_blocks): Sequential(
+          (0): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (1): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (2): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (3): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (4): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (5): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (6): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (7): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+        )
+        (last_norm): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+        (post_net1): Conv1d(192, 192, kernel_size=(3,), stride=(1,), padding=(1,))
+        (g_prenet): Conv1d(192, 192, kernel_size=(3,), stride=(1,), padding=(1,))
+      )
+      (out_proj): Conv1d(192, 32, kernel_size=(1,), stride=(1,))
+    )
+    (prior_flow): ResFlow(
+      (flows): ModuleList(
+        (0): CouplingLayer(
+          (pre): Conv1d(8, 64, kernel_size=(1,), stride=(1,))
+          (enc): WN(
+            (in_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (1): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (2): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (3): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+            )
+            (res_skip_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (1): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (2): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (3): Conv1d(64, 64, kernel_size=(1,), stride=(1,))
+            )
+            (drop): Dropout(p=0, inplace=False)
+            (cond_layer): Conv1d(192, 512, kernel_size=(1,), stride=(1,))
+          )
+          (post): Conv1d(64, 8, kernel_size=(1,), stride=(1,))
+        )
+        (1): FlipLayer()
+        (2): CouplingLayer(
+          (pre): Conv1d(8, 64, kernel_size=(1,), stride=(1,))
+          (enc): WN(
+            (in_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (1): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (2): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (3): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+            )
+            (res_skip_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (1): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (2): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (3): Conv1d(64, 64, kernel_size=(1,), stride=(1,))
+            )
+            (drop): Dropout(p=0, inplace=False)
+            (cond_layer): Conv1d(192, 512, kernel_size=(1,), stride=(1,))
+          )
+          (post): Conv1d(64, 8, kernel_size=(1,), stride=(1,))
+        )
+        (3): FlipLayer()
+        (4): CouplingLayer(
+          (pre): Conv1d(8, 64, kernel_size=(1,), stride=(1,))
+          (enc): WN(
+            (in_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (1): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (2): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (3): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+            )
+            (res_skip_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (1): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (2): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (3): Conv1d(64, 64, kernel_size=(1,), stride=(1,))
+            )
+            (drop): Dropout(p=0, inplace=False)
+            (cond_layer): Conv1d(192, 512, kernel_size=(1,), stride=(1,))
+          )
+          (post): Conv1d(64, 8, kernel_size=(1,), stride=(1,))
+        )
+        (5): FlipLayer()
+        (6): CouplingLayer(
+          (pre): Conv1d(8, 64, kernel_size=(1,), stride=(1,))
+          (enc): WN(
+            (in_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (1): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (2): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+              (3): Conv1d(64, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+            )
+            (res_skip_layers): ModuleList(
+              (0): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (1): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (2): Conv1d(64, 128, kernel_size=(1,), stride=(1,))
+              (3): Conv1d(64, 64, kernel_size=(1,), stride=(1,))
+            )
+            (drop): Dropout(p=0, inplace=False)
+            (cond_layer): Conv1d(192, 512, kernel_size=(1,), stride=(1,))
+          )
+          (post): Conv1d(64, 8, kernel_size=(1,), stride=(1,))
+        )
+        (7): FlipLayer()
+      )
+    )
+    (decoder): FVAEDecoder(
+      (pre_net): Sequential(
+        (0): ConvTranspose1d(16, 192, kernel_size=(4,), stride=(4,))
+      )
+      (nn): ConditionalConvBlocks(
+        (res_blocks): Sequential(
+          (0): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (1): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (2): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+          (3): ResidualBlock(
+            (blocks): ModuleList(
+              (0): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+              (1): Sequential(
+                (0): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+                (1): Conv1d(192, 384, kernel_size=(5,), stride=(1,), padding=(2,))
+                (2): LambdaLayer()
+                (3): GELU(approximate=none)
+                (4): Conv1d(384, 192, kernel_size=(1,), stride=(1,))
+              )
+            )
+          )
+        )
+        (last_norm): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+        (post_net1): Conv1d(192, 192, kernel_size=(3,), stride=(1,), padding=(1,))
+        (g_prenet): Conv1d(192, 192, kernel_size=(3,), stride=(1,), padding=(1,))
+      )
+      (out_proj): Conv1d(192, 80, kernel_size=(1,), stride=(1,))
+    )
+  )
+  (word_pos_proj): Linear(in_features=192, out_features=192, bias=True)
+)
+| model Trainable Parameters: 23.020M
+| dur_predictor Trainable Parameters: 0.555M
+| length_regulator Trainable Parameters: 0.000M
+| ph_encoder Trainable Parameters: 4.753M
+| ph2word_encoder Trainable Parameters: 2.081M
+| sin_pos Trainable Parameters: 0.000M
+| enc_pos_proj Trainable Parameters: 0.074M
+| dec_query_proj Trainable Parameters: 0.074M
+| dec_res_proj Trainable Parameters: 0.074M
+| attn Trainable Parameters: 0.147M
+| text_encoder_postnet Trainable Parameters: 2.771M
+| fvae Trainable Parameters: 12.453M
+| word_pos_proj Trainable Parameters: 0.037M
+| fvae.g_pre_net Trainable Parameters: 0.295M
+| fvae.encoder Trainable Parameters: 7.444M
+| fvae.prior_flow Trainable Parameters: 0.917M
+| fvae.decoder Trainable Parameters: 3.796M
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@10000: {'total_loss': 51.8263, 'kl_v': 0.0694, 'kl': 0.0694, 'l1': 0.1468, 'ssim': 0.1864, 'wdur': 0.1788, 'abs_word_dur_error': 48.102, 'abs_sent_dur_error': 0.4636, 'fr': 0.8025, 'pcr': 0.8348, 'dfr': 0.9724, 'pe_perceptual_layer_0': 0.1841, 'pe_perceptual_layer_1': 0.5094, 'pe_perceptual_layer_2': 0.629, 'pe_perceptual_layer_3': 0.1065, 'pe_perceptual_layer_4': 0.1281, 'pe_perceptual_layer_5': 0.755, 'pe_perceptual_layer_6': 0.8343, 'pe_perceptual_layer_7': 0.6819, 'pe_perceptual_layer_8': 0.4911, 'pe_perceptual_layer_9': 0.1061, 'f0_dtw': 30.6725}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@12000: {'total_loss': 53.5098, 'kl_v': 0.0745, 'kl': 0.0745, 'l1': 0.1508, 'ssim': 0.1898, 'wdur': 0.1823, 'abs_word_dur_error': 49.6133, 'abs_sent_dur_error': 0.5923, 'fr': 0.81, 'pcr': 0.8491, 'dfr': 0.9731, 'pe_perceptual_layer_0': 0.1921, 'pe_perceptual_layer_1': 0.5269, 'pe_perceptual_layer_2': 0.6512, 'pe_perceptual_layer_3': 0.1103, 'pe_perceptual_layer_4': 0.1327, 'pe_perceptual_layer_5': 0.767, 'pe_perceptual_layer_6': 0.845, 'pe_perceptual_layer_7': 0.6906, 'pe_perceptual_layer_8': 0.4972, 'pe_perceptual_layer_9': 0.1081}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@14000: {'total_loss': 54.312, 'kl_v': 0.0816, 'kl': 0.0816, 'l1': 0.1543, 'ssim': 0.1961, 'wdur': 0.1824, 'abs_word_dur_error': 50.3983, 'abs_sent_dur_error': 0.5875, 'fr': 0.8086, 'pcr': 0.8486, 'dfr': 0.9729, 'pe_perceptual_layer_0': 0.1969, 'pe_perceptual_layer_1': 0.5363, 'pe_perceptual_layer_2': 0.657, 'pe_perceptual_layer_3': 0.1113, 'pe_perceptual_layer_4': 0.134, 'pe_perceptual_layer_5': 0.777, 'pe_perceptual_layer_6': 0.8539, 'pe_perceptual_layer_7': 0.6981, 'pe_perceptual_layer_8': 0.5031, 'pe_perceptual_layer_9': 0.1097}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@16000: {'total_loss': 55.4649, 'kl_v': 0.0893, 'kl': 0.0893, 'l1': 0.1618, 'ssim': 0.2059, 'wdur': 0.1891, 'abs_word_dur_error': 51.504, 'abs_sent_dur_error': 0.5882, 'fr': 0.8132, 'pcr': 0.8511, 'dfr': 0.9731, 'pe_perceptual_layer_0': 0.2142, 'pe_perceptual_layer_1': 0.578, 'pe_perceptual_layer_2': 0.707, 'pe_perceptual_layer_3': 0.12, 'pe_perceptual_layer_4': 0.1447, 'pe_perceptual_layer_5': 0.8136, 'pe_perceptual_layer_6': 0.8941, 'pe_perceptual_layer_7': 0.7341, 'pe_perceptual_layer_8': 0.5293, 'pe_perceptual_layer_9': 0.1145}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@18000: {'total_loss': 53.6004, 'kl_v': 0.0933, 'kl': 0.0933, 'l1': 0.1674, 'ssim': 0.2133, 'wdur': 0.1827, 'abs_word_dur_error': 49.7385, 'abs_sent_dur_error': 0.4656, 'fr': 0.8183, 'pcr': 0.8552, 'dfr': 0.9728, 'pe_perceptual_layer_0': 0.2271, 'pe_perceptual_layer_1': 0.6122, 'pe_perceptual_layer_2': 0.7469, 'pe_perceptual_layer_3': 0.1274, 'pe_perceptual_layer_4': 0.1572, 'pe_perceptual_layer_5': 0.8537, 'pe_perceptual_layer_6': 0.932, 'pe_perceptual_layer_7': 0.7661, 'pe_perceptual_layer_8': 0.5547, 'pe_perceptual_layer_9': 0.1191}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@20000: {'total_loss': 53.1732, 'kl_v': 0.0995, 'kl': 0.0995, 'l1': 0.1683, 'ssim': 0.2151, 'wdur': 0.181, 'abs_word_dur_error': 49.2487, 'abs_sent_dur_error': 0.517, 'fr': 0.8178, 'pcr': 0.8535, 'dfr': 0.9727, 'pe_perceptual_layer_0': 0.2375, 'pe_perceptual_layer_1': 0.645, 'pe_perceptual_layer_2': 0.7812, 'pe_perceptual_layer_3': 0.1314, 'pe_perceptual_layer_4': 0.1646, 'pe_perceptual_layer_5': 0.8831, 'pe_perceptual_layer_6': 0.9679, 'pe_perceptual_layer_7': 0.8076, 'pe_perceptual_layer_8': 0.5786, 'pe_perceptual_layer_9': 0.1198, 'f0_dtw': 28.971}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@22000: {'total_loss': 54.2263, 'kl_v': 0.109, 'kl': 0.109, 'l1': 0.1715, 'ssim': 0.2249, 'wdur': 0.1857, 'abs_word_dur_error': 50.2638, 'abs_sent_dur_error': 0.5163, 'fr': 0.8181, 'pcr': 0.8554, 'dfr': 0.9726, 'pe_perceptual_layer_0': 0.2599, 'pe_perceptual_layer_1': 0.7, 'pe_perceptual_layer_2': 0.8383, 'pe_perceptual_layer_3': 0.1421, 'pe_perceptual_layer_4': 0.1772, 'pe_perceptual_layer_5': 0.9223, 'pe_perceptual_layer_6': 1.0169, 'pe_perceptual_layer_7': 0.8602, 'pe_perceptual_layer_8': 0.6082, 'pe_perceptual_layer_9': 0.121}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@24000: {'total_loss': 55.3468, 'kl_v': 0.111, 'kl': 0.111, 'l1': 0.1767, 'ssim': 0.2307, 'wdur': 0.1869, 'abs_word_dur_error': 51.3453, 'abs_sent_dur_error': 0.5444, 'fr': 0.8156, 'pcr': 0.8526, 'dfr': 0.9725, 'pe_perceptual_layer_0': 0.2682, 'pe_perceptual_layer_1': 0.7222, 'pe_perceptual_layer_2': 0.8621, 'pe_perceptual_layer_3': 0.1456, 'pe_perceptual_layer_4': 0.1827, 'pe_perceptual_layer_5': 0.9396, 'pe_perceptual_layer_6': 1.0401, 'pe_perceptual_layer_7': 0.8863, 'pe_perceptual_layer_8': 0.6256, 'pe_perceptual_layer_9': 0.124}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@26000: {'total_loss': 57.2875, 'kl_v': 0.118, 'kl': 0.118, 'l1': 0.179, 'ssim': 0.2338, 'wdur': 0.1912, 'abs_word_dur_error': 53.1697, 'abs_sent_dur_error': 0.6388, 'fr': 0.8149, 'pcr': 0.8515, 'dfr': 0.9723, 'pe_perceptual_layer_0': 0.2806, 'pe_perceptual_layer_1': 0.7548, 'pe_perceptual_layer_2': 0.8926, 'pe_perceptual_layer_3': 0.15, 'pe_perceptual_layer_4': 0.1894, 'pe_perceptual_layer_5': 0.9599, 'pe_perceptual_layer_6': 1.0611, 'pe_perceptual_layer_7': 0.9085, 'pe_perceptual_layer_8': 0.6403, 'pe_perceptual_layer_9': 0.1249}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@28000: {'total_loss': 53.7622, 'kl_v': 0.1137, 'kl': 0.1137, 'l1': 0.1823, 'ssim': 0.2406, 'wdur': 0.1833, 'abs_word_dur_error': 49.793, 'abs_sent_dur_error': 0.4878, 'fr': 0.8188, 'pcr': 0.8564, 'dfr': 0.9727, 'pe_perceptual_layer_0': 0.2969, 'pe_perceptual_layer_1': 0.7963, 'pe_perceptual_layer_2': 0.933, 'pe_perceptual_layer_3': 0.1564, 'pe_perceptual_layer_4': 0.1992, 'pe_perceptual_layer_5': 0.9899, 'pe_perceptual_layer_6': 1.0978, 'pe_perceptual_layer_7': 0.9498, 'pe_perceptual_layer_8': 0.6627, 'pe_perceptual_layer_9': 0.1256}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@30000: {'total_loss': 54.1469, 'kl_v': 0.1197, 'kl': 0.1197, 'l1': 0.1823, 'ssim': 0.239, 'wdur': 0.1829, 'abs_word_dur_error': 50.2123, 'abs_sent_dur_error': 0.4498, 'fr': 0.8152, 'pcr': 0.8535, 'dfr': 0.9725, 'pe_perceptual_layer_0': 0.3014, 'pe_perceptual_layer_1': 0.8102, 'pe_perceptual_layer_2': 0.9493, 'pe_perceptual_layer_3': 0.159, 'pe_perceptual_layer_4': 0.2041, 'pe_perceptual_layer_5': 1.0036, 'pe_perceptual_layer_6': 1.1144, 'pe_perceptual_layer_7': 0.9679, 'pe_perceptual_layer_8': 0.6753, 'pe_perceptual_layer_9': 0.1265, 'f0_dtw': 28.6883}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@32000: {'total_loss': 55.0054, 'kl_v': 0.1204, 'kl': 0.1204, 'l1': 0.1859, 'ssim': 0.2478, 'wdur': 0.1847, 'abs_word_dur_error': 50.9757, 'abs_sent_dur_error': 0.5245, 'fr': 0.8181, 'pcr': 0.8552, 'dfr': 0.9726, 'pe_perceptual_layer_0': 0.3144, 'pe_perceptual_layer_1': 0.8395, 'pe_perceptual_layer_2': 0.9773, 'pe_perceptual_layer_3': 0.1644, 'pe_perceptual_layer_4': 0.2103, 'pe_perceptual_layer_5': 1.0247, 'pe_perceptual_layer_6': 1.1347, 'pe_perceptual_layer_7': 0.9875, 'pe_perceptual_layer_8': 0.6885, 'pe_perceptual_layer_9': 0.1284}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@34000: {'total_loss': 54.3327, 'kl_v': 0.1173, 'kl': 0.1173, 'l1': 0.1875, 'ssim': 0.2496, 'wdur': 0.182, 'abs_word_dur_error': 50.3724, 'abs_sent_dur_error': 0.4575, 'fr': 0.8195, 'pcr': 0.8571, 'dfr': 0.9726, 'pe_perceptual_layer_0': 0.3217, 'pe_perceptual_layer_1': 0.8593, 'pe_perceptual_layer_2': 0.9981, 'pe_perceptual_layer_3': 0.1672, 'pe_perceptual_layer_4': 0.2146, 'pe_perceptual_layer_5': 1.0359, 'pe_perceptual_layer_6': 1.1503, 'pe_perceptual_layer_7': 1.0042, 'pe_perceptual_layer_8': 0.7021, 'pe_perceptual_layer_9': 0.1307}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@36000: {'total_loss': 55.3515, 'kl_v': 0.1228, 'kl': 0.1228, 'l1': 0.1888, 'ssim': 0.2538, 'wdur': 0.1875, 'abs_word_dur_error': 51.3296, 'abs_sent_dur_error': 0.501, 'fr': 0.8177, 'pcr': 0.8552, 'dfr': 0.9722, 'pe_perceptual_layer_0': 0.3238, 'pe_perceptual_layer_1': 0.8597, 'pe_perceptual_layer_2': 0.9955, 'pe_perceptual_layer_3': 0.1672, 'pe_perceptual_layer_4': 0.2141, 'pe_perceptual_layer_5': 1.0384, 'pe_perceptual_layer_6': 1.151, 'pe_perceptual_layer_7': 1.002, 'pe_perceptual_layer_8': 0.6983, 'pe_perceptual_layer_9': 0.1295}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@38000: {'total_loss': 54.6426, 'kl_v': 0.1224, 'kl': 0.1224, 'l1': 0.191, 'ssim': 0.2556, 'wdur': 0.1842, 'abs_word_dur_error': 50.6374, 'abs_sent_dur_error': 0.4856, 'fr': 0.8167, 'pcr': 0.8548, 'dfr': 0.9726, 'pe_perceptual_layer_0': 0.3313, 'pe_perceptual_layer_1': 0.8839, 'pe_perceptual_layer_2': 1.0205, 'pe_perceptual_layer_3': 0.1706, 'pe_perceptual_layer_4': 0.2198, 'pe_perceptual_layer_5': 1.0535, 'pe_perceptual_layer_6': 1.1696, 'pe_perceptual_layer_7': 1.0239, 'pe_perceptual_layer_8': 0.7111, 'pe_perceptual_layer_9': 0.1302}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@40000: {'total_loss': 55.0365, 'kl_v': 0.1184, 'kl': 0.1184, 'l1': 0.1911, 'ssim': 0.2572, 'wdur': 0.1867, 'abs_word_dur_error': 50.9974, 'abs_sent_dur_error': 0.5205, 'fr': 0.8174, 'pcr': 0.857, 'dfr': 0.9725, 'pe_perceptual_layer_0': 0.3345, 'pe_perceptual_layer_1': 0.8903, 'pe_perceptual_layer_2': 1.0342, 'pe_perceptual_layer_3': 0.1735, 'pe_perceptual_layer_4': 0.2225, 'pe_perceptual_layer_5': 1.0598, 'pe_perceptual_layer_6': 1.1767, 'pe_perceptual_layer_7': 1.0317, 'pe_perceptual_layer_8': 0.7156, 'pe_perceptual_layer_9': 0.1322, 'f0_dtw': 28.4247}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@42000: {'total_loss': 54.9636, 'kl_v': 0.1212, 'kl': 0.1212, 'l1': 0.1909, 'ssim': 0.253, 'wdur': 0.1854, 'abs_word_dur_error': 50.9491, 'abs_sent_dur_error': 0.4912, 'fr': 0.8202, 'pcr': 0.8589, 'dfr': 0.9726, 'pe_perceptual_layer_0': 0.3288, 'pe_perceptual_layer_1': 0.8773, 'pe_perceptual_layer_2': 1.0153, 'pe_perceptual_layer_3': 0.1697, 'pe_perceptual_layer_4': 0.2193, 'pe_perceptual_layer_5': 1.0572, 'pe_perceptual_layer_6': 1.1695, 'pe_perceptual_layer_7': 1.0193, 'pe_perceptual_layer_8': 0.7154, 'pe_perceptual_layer_9': 0.1321}
+| load 'model_gen' from 'checkpoints/hifi_lj/model_ckpt_steps_2076000.ckpt'.
+| load 'model' from 'checkpoints/1121_pitch_extractor/model_ckpt_steps_120000.ckpt'.
+| Validation results@44000: {'total_loss': 55.1718, 'kl_v': 0.1175, 'kl': 0.1175, 'l1': 0.1962, 'ssim': 0.2637, 'wdur': 0.1875, 'abs_word_dur_error': 51.1125, 'abs_sent_dur_error': 0.5292, 'fr': 0.8185, 'pcr': 0.8568, 'dfr': 0.9724, 'pe_perceptual_layer_0': 0.3489, 'pe_perceptual_layer_1': 0.9226, 'pe_perceptual_layer_2': 1.0591, 'pe_perceptual_layer_3': 0.1773, 'pe_perceptual_layer_4': 0.2288, 'pe_perceptual_layer_5': 1.0839, 'pe_perceptual_layer_6': 1.2039, 'pe_perceptual_layer_7': 1.0597, 'pe_perceptual_layer_8': 0.7356, 'pe_perceptual_layer_9': 0.1327}
