@@ -64,7 +64,7 @@ def initialize_model_inpaint(config, ckpt):
     sampler = DDIMSampler(model)
     return sampler
 def select_best_audio(prompt,wav_list):
-    clap_model = CLAPWrapper('useful_ckpts/CLAP/CLAP_weights_2022.pth','useful_ckpts/CLAP/config.yml',use_cuda=torch.cuda.is_available())
+    clap_model = CLAPWrapper('text_to_audio/Make_An_Audio/useful_ckpts/CLAP/CLAP_weights_2022.pth','text_to_audio/Make_An_Audio/useful_ckpts/CLAP/config.yml',use_cuda=torch.cuda.is_available())
     text_embeddings = clap_model.get_text_embeddings([prompt])
     score_list = []
     for data in wav_list:
