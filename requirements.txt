@@ -11,7 +11,7 @@ einops==0.3.0
 g2p-en==2.1.0
 google==3.0.0
 gradio
-h5py==2.8.0
+h5py
 imageio==2.9.0
 imageio-ffmpeg==0.4.2
 invisible-watermark>=0.1.5
