@@ -197,7 +197,7 @@ class ConversationBot:
                               "The input to this tool should be a string, representing the image_path. "),
             Tool(name="Generate Text From The Audio", func=self.a2t.inference,
                  description="useful for when you want to describe an audio in text, receives audio_path as input."
-                             "The input to this tool should be a string, representing the audio_path.")
+                             "The input to this tool should be a string, representing the audio_path."),
             Tool(name="Audio Inpainting", func=self.inpaint.show_mel_fn,
                  description="useful for when you want to inpaint a mel spectrum of an audio and predict this audio, this tool will generate a mel spectrum and you can inpaint it, receives audio_path as input, "
                              "The input to this tool should be a string, representing the audio_path.")]
