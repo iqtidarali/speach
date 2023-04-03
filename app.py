@@ -70,7 +70,7 @@ class ConversationBot:
             tool = res['intermediate_steps'][0][0].tool
             if tool == "Generate Image From User Input Text" or tool == "Generate Text From The Audio" or tool == "Transcribe speech":
                 print("======>Current memory:\n %s" % self.agent.memory)
-                response = re.sub('(image/\S*png)', lambda m: f'![]({m.group(0)})*{m.group(0)}*', res['output'])
+                response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
                 state = state + [(text, response)]
                 print("Outputs:", state)
                 return state, state, gr.Audio.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
@@ -85,7 +85,7 @@ class ConversationBot:
                 print("Outputs:", state)
                 return state, state, gr.Audio.update(value=audio_filename,visible=True), gr.Image.update(value=image_filename,visible=True), gr.Button.update(visible=True)
             print("======>Current memory:\n %s" % self.agent.memory)
-            response = re.sub('(image/\S*png)', lambda m: f'![]({m.group(0)})*{m.group(0)}*', res['output'])
+            response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
             audio_filename = res['intermediate_steps'][0][1]
             state = state + [(text, response)]
             print("Outputs:", state)
@@ -134,7 +134,7 @@ class ConversationBot:
             AI_prompt = "Received.  "
             self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
             print("======>Current memory:\n %s" % self.agent.memory)
-            state = state + [(f"![]({image_filename})*{image_filename}*", AI_prompt)]
+            state = state + [(f"![](/file={image_filename})*{image_filename}*", AI_prompt)]
             print("Outputs:", state)
             return state, state, txt + ' ' + image_filename + ' ', gr.Audio.update(visible=False)
 
@@ -144,7 +144,7 @@ class ConversationBot:
         print("======>Previous memory:\n %s" % self.agent.memory)
         inpaint = Inpaint(device="cuda:0")
         new_image_filename, new_audio_filename = inpaint.inference(audio_filename, image_filename)       
-        AI_prompt = "Here are the predict audio and the mel spectrum." + f"*{new_audio_filename}*" + f"![]({new_image_filename})*{new_image_filename}*"
+        AI_prompt = "Here are the predict audio and the mel spectrum." + f"*{new_audio_filename}*" + f"![](/file={new_image_filename})*{new_image_filename}*"
         self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
         print("======>Current memory:\n %s" % self.agent.memory)
         state = state + [(f"Audio Inpainting", AI_prompt)]
@@ -160,13 +160,13 @@ class ConversationBot:
         self.llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
         # self.t2i = T2I(device="cuda:0")
         # self.i2t = ImageCaptioning(device="cuda:0")
-        self.t2a = T2A(device="cpu")
+        # self.t2a = T2A(device="cpu")
         self.tts = TTS(device="cpu")
         # self.t2s = T2S(device="cuda:0")
-        self.i2a = I2A(device="cpu")
-        self.a2t = A2T(device="cpu")
+        # self.i2a = I2A(device="cpu")
+        # self.a2t = A2T(device="cpu")
         # self.asr = ASR(device="cuda:0")
-        self.inpaint = Inpaint(device="cpu")
+        # self.inpaint = Inpaint(device="cpu")
         #self.tts_ood = TTS_OOD(device="cuda:0")
         self.tools = [
             # Tool(name="Generate Image From User Input Text", func=self.t2i.inference,
@@ -175,9 +175,9 @@ class ConversationBot:
             # Tool(name="Get Photo Description", func=self.i2t.inference,
             #      description="useful for when you want to know what is inside the photo. receives image_path as input. "
             #                  "The input to this tool should be a string, representing the image_path. "),
-            Tool(name="Generate Audio From User Input Text", func=self.t2a.inference,
-                 description="useful for when you want to generate an audio from a user input text and it saved it to a file."
-                             "The input to this tool should be a string, representing the text used to generate audio."),
+            # Tool(name="Generate Audio From User Input Text", func=self.t2a.inference,
+            #      description="useful for when you want to generate an audio from a user input text and it saved it to a file."
+            #                  "The input to this tool should be a string, representing the text used to generate audio."),
             # Tool(
             #     name="Generate human speech with style derived from a speech reference and user input text and save it to a file", func= self.tts_ood.inference,
             #     description="useful for when you want to generate speech samples with styles (e.g., timbre, emotion, and prosody) derived from a reference custom voice."
@@ -191,16 +191,16 @@ class ConversationBot:
             #                  "The input to this tool should be a comma seperated string of three, representing text, note and duration sequence since User Input Text, Note and Duration Sequence are all provided."),
             Tool(name="Synthesize Speech Given the User Input Text", func=self.tts.inference,
                  description="useful for when you want to convert a user input text into speech audio it saved it to a file."
-                             "The input to this tool should be a string, representing the text used to be converted to speech."),
-            Tool(name="Generate Audio From The Image", func=self.i2a.inference,
-                 description="useful for when you want to generate an audio based on an image."
-                              "The input to this tool should be a string, representing the image_path. "),
-            Tool(name="Generate Text From The Audio", func=self.a2t.inference,
-                 description="useful for when you want to describe an audio in text, receives audio_path as input."
-                             "The input to this tool should be a string, representing the audio_path."),
-            Tool(name="Audio Inpainting", func=self.inpaint.show_mel_fn,
-                 description="useful for when you want to inpaint a mel spectrum of an audio and predict this audio, this tool will generate a mel spectrum and you can inpaint it, receives audio_path as input, "
-                             "The input to this tool should be a string, representing the audio_path.")]
+                             "The input to this tool should be a string, representing the text used to be converted to speech.")]
+            # Tool(name="Generate Audio From The Image", func=self.i2a.inference,
+            #      description="useful for when you want to generate an audio based on an image."
+            #                   "The input to this tool should be a string, representing the image_path. "),
+            # Tool(name="Generate Text From The Audio", func=self.a2t.inference,
+            #      description="useful for when you want to describe an audio in text, receives audio_path as input."
+            #                  "The input to this tool should be a string, representing the audio_path."),
+            # Tool(name="Audio Inpainting", func=self.inpaint.show_mel_fn,
+            #      description="useful for when you want to inpaint a mel spectrum of an audio and predict this audio, this tool will generate a mel spectrum and you can inpaint it, receives audio_path as input, "
+            #                  "The input to this tool should be a string, representing the audio_path.")]
             # Tool(name="Transcribe speech", func=self.asr.inference,
             #      description="useful for when you want to know the text corresponding to a human speech, receives audio_path as input."
             #                  "The input to this tool should be a string, representing the audio_path.")]
