@@ -163,10 +163,10 @@ class ConversationBot:
         self.t2a = T2A(device="cpu")
         self.tts = TTS(device="cpu")
         # self.t2s = T2S(device="cuda:0")
-        self.i2a = I2A(device="cuda:0")
+        self.i2a = I2A(device="cpu")
         self.a2t = A2T(device="cpu")
         # self.asr = ASR(device="cuda:0")
-        self.inpaint = Inpaint(device="cuda:0")
+        self.inpaint = Inpaint(device="cpu")
         #self.tts_ood = TTS_OOD(device="cuda:0")
         self.tools = [
             # Tool(name="Generate Image From User Input Text", func=self.t2i.inference,
