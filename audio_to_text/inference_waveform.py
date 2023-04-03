@@ -59,7 +59,7 @@ def decode_caption(word_ids, vocabulary):
 
 
 class AudioCapModel(object):
-    def __init__(self,weight_dir,device='cuda'):
+    def __init__(self,weight_dir,device='cpu'):
         config = os.path.join(weight_dir,'config.yaml')
         self.config = train_util.parse_config_or_kwargs(config)
         checkpoint = os.path.join(weight_dir,'swa.pth')
