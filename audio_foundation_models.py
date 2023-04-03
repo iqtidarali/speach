@@ -292,7 +292,7 @@ class Inpaint:
         print("Initializing Make-An-Audio-inpaint to %s" % device)
         self.device = device
         self.sampler = initialize_model_inpaint('text_to_audio/Make_An_Audio/configs/inpaint/txt2audio_args.yaml', 'text_to_audio/Make_An_Audio/useful_ckpts/inpaint7_epoch00047.ckpt')
-        self.vocoder = VocoderBigVGAN('./vocoder/logs/bigv16k53w',device=device)
+        self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio/vocoder/logs/bigv16k53w',device=device)
         self.cmap_transform = matplotlib.cm.viridis
     def make_batch_sd(self, mel, mask, num_samples=1):
 
