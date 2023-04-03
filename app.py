@@ -232,16 +232,20 @@ if __name__ == '__main__':
         chatbot = gr.Chatbot(elem_id="chatbot", label="AudioGPT")
         state = gr.State([])
         with gr.Row(visible = False) as input_raws:
-            with gr.Column(scale=0.9):
+            with gr.Column(scale=0.7):
                 txt = gr.Textbox(show_label=False, placeholder="Enter text and press enter, or upload an image").style(container=False)
             with gr.Column(scale=0.15, min_width=0):
                 clear = gr.Button("Clear️")
             with gr.Column(scale=0.15, min_width=0):
                 btn = gr.UploadButton("Upload", file_types=["image","audio"])
+        with gr.Row():        
             with gr.Column():
                 outaudio = gr.Audio(visible=False)
+        with gr.Row():           
             with gr.Column():
                 show_mel = gr.Image(type="filepath",tool='sketch',visible=False)
+        with gr.Row():           
+            with gr.Column():        
                 run_button = gr.Button("Predict Masked Place",visible=False)
         gr.Examples(
             examples=["Generate an audio of a dog barking",
