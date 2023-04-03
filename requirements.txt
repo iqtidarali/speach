@@ -1,6 +1,7 @@
 --extra-index-url https://download.pytorch.org/whl/cu113
 accelerate
 addict==2.4.0
+aiofiles
 albumentations==1.3.0
 appdirs==1.4.4
 basicsr==1.4.2
