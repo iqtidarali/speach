@@ -51,7 +51,7 @@ def cut_dialogue_history(history_memory, keep_last_n_words = 500):
 
 class ConversationBot:
     def __init__(self):
-        print("Initializing AudioChatGPT")
+        print("Initializing AudioGPT")
         self.tools = []
         self.memory = ConversationBufferMemory(memory_key="chat_history", output_key='output')
     def run_text(self, text, state):
@@ -224,8 +224,8 @@ if __name__ == '__main__':
                 type="password",
             )
         with gr.Row():
-            gr.Markdown("## Audio ChatGPT")
-        chatbot = gr.Chatbot(elem_id="chatbot", label="Audio ChatGPT")
+            gr.Markdown("## AudioGPT")
+        chatbot = gr.Chatbot(elem_id="chatbot", label="AudioGPT")
         state = gr.State([])
         with gr.Row(visible = False) as input_raws:
             with gr.Column(scale=0.7):
