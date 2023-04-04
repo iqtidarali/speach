@@ -162,9 +162,9 @@ class ConversationBot:
         # self.i2t = ImageCaptioning(device="cuda:0")
         # self.t2a = T2A(device="cpu")
         self.tts = TTS(device="cpu")
-        # self.t2s = T2S(device="cuda:0")
+        self.t2s = T2S(device="cpu")
         # self.i2a = I2A(device="cpu")
-        self.a2t = A2T(device="cpu")
+        # self.a2t = A2T(device="cpu")
         # self.asr = ASR(device="cuda:0")
         # self.inpaint = Inpaint(device="cpu")
         #self.tts_ood = TTS_OOD(device="cuda:0")
@@ -183,21 +183,21 @@ class ConversationBot:
             #     description="useful for when you want to generate speech samples with styles (e.g., timbre, emotion, and prosody) derived from a reference custom voice."
             #                 "Like: Generate a speech with style transferred from this voice. The text is xxx., or speak using the voice of this audio. The text is xxx."
             #                 "The input to this tool should be a comma seperated string of two, representing reference audio path and input text."),
-            # Tool(name="Generate singing voice From User Input Text, Note and Duration Sequence", func= self.t2s.inference,
-            #      description="useful for when you want to generate a piece of singing voice (Optional: from User Input Text, Note and Duration Sequence) and save it to a file."
-            #                  "If Like: Generate a piece of singing voice, the input to this tool should be \"\" since there is no User Input Text, Note and Duration Sequence ."
-            #                  "If Like: Generate a piece of singing voice. Text: xxx, Note: xxx, Duration: xxx. "
-            #                  "Or Like: Generate a piece of singing voice. Text is xxx, note is xxx, duration is xxx."
-            #                  "The input to this tool should be a comma seperated string of three, representing text, note and duration sequence since User Input Text, Note and Duration Sequence are all provided."),
+            Tool(name="Generate singing voice From User Input Text, Note and Duration Sequence", func= self.t2s.inference,
+                 description="useful for when you want to generate a piece of singing voice (Optional: from User Input Text, Note and Duration Sequence) and save it to a file."
+                             "If Like: Generate a piece of singing voice, the input to this tool should be \"\" since there is no User Input Text, Note and Duration Sequence ."
+                             "If Like: Generate a piece of singing voice. Text: xxx, Note: xxx, Duration: xxx. "
+                             "Or Like: Generate a piece of singing voice. Text is xxx, note is xxx, duration is xxx."
+                             "The input to this tool should be a comma seperated string of three, representing text, note and duration sequence since User Input Text, Note and Duration Sequence are all provided."),
             Tool(name="Synthesize Speech Given the User Input Text", func=self.tts.inference,
                  description="useful for when you want to convert a user input text into speech audio it saved it to a file."
-                             "The input to this tool should be a string, representing the text used to be converted to speech."),
+                             "The input to this tool should be a string, representing the text used to be converted to speech.")]
             # Tool(name="Generate Audio From The Image", func=self.i2a.inference,
             #      description="useful for when you want to generate an audio based on an image."
             #                   "The input to this tool should be a string, representing the image_path. "),
-            Tool(name="Generate Text From The Audio", func=self.a2t.inference,
-                 description="useful for when you want to describe an audio in text, receives audio_path as input."
-                             "The input to this tool should be a string, representing the audio_path.")]
+            # Tool(name="Generate Text From The Audio", func=self.a2t.inference,
+            #      description="useful for when you want to describe an audio in text, receives audio_path as input."
+            #                  "The input to this tool should be a string, representing the audio_path.")]
             # Tool(name="Audio Inpainting", func=self.inpaint.show_mel_fn,
             #      description="useful for when you want to inpaint a mel spectrum of an audio and predict this audio, this tool will generate a mel spectrum and you can inpaint it, receives audio_path as input, "
             #                  "The input to this tool should be a string, representing the audio_path.")]
