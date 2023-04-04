@@ -160,14 +160,14 @@ class ConversationBot:
         self.llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
         # self.t2i = T2I(device="cuda:0")
         # self.i2t = ImageCaptioning(device="cuda:0")
-        # self.t2a = T2A(device="cpu")
+        self.t2a = T2A(device="cpu")
         self.tts = TTS(device="cpu")
         self.t2s = T2S(device="cpu")
         # self.i2a = I2A(device="cpu")
         # self.a2t = A2T(device="cpu")
         # self.asr = ASR(device="cuda:0")
         # self.inpaint = Inpaint(device="cpu")
-        self.tts_ood = TTS_OOD(device="cpu")
+        # self.tts_ood = TTS_OOD(device="cpu")
         self.tools = [
             # Tool(name="Generate Image From User Input Text", func=self.t2i.inference,
             #      description="useful for when you want to generate an image from a user input text and it saved it to a file. like: generate an image of an object or something, or generate an image that includes some objects. "
@@ -175,14 +175,14 @@ class ConversationBot:
             # Tool(name="Get Photo Description", func=self.i2t.inference,
             #      description="useful for when you want to know what is inside the photo. receives image_path as input. "
             #                  "The input to this tool should be a string, representing the image_path. "),
-            # Tool(name="Generate Audio From User Input Text", func=self.t2a.inference,
-            #      description="useful for when you want to generate an audio from a user input text and it saved it to a file."
-            #                  "The input to this tool should be a string, representing the text used to generate audio."),
-            Tool(
-                name="Generate human speech with style derived from a speech reference and user input text and save it to a file", func= self.tts_ood.inference,
-                description="useful for when you want to generate speech samples with styles (e.g., timbre, emotion, and prosody) derived from a reference custom voice."
-                            "Like: Generate a speech with style transferred from this voice. The text is xxx., or speak using the voice of this audio. The text is xxx."
-                            "The input to this tool should be a comma seperated string of two, representing reference audio path and input text."),
+            Tool(name="Generate Audio From User Input Text", func=self.t2a.inference,
+                 description="useful for when you want to generate an audio from a user input text and it saved it to a file."
+                             "The input to this tool should be a string, representing the text used to generate audio."),
+            # Tool(
+            #     name="Generate human speech with style derived from a speech reference and user input text and save it to a file", func= self.tts_ood.inference,
+            #     description="useful for when you want to generate speech samples with styles (e.g., timbre, emotion, and prosody) derived from a reference custom voice."
+            #                 "Like: Generate a speech with style transferred from this voice. The text is xxx., or speak using the voice of this audio. The text is xxx."
+            #                 "The input to this tool should be a comma seperated string of two, representing reference audio path and input text."),
             Tool(name="Generate singing voice From User Input Text, Note and Duration Sequence", func= self.t2s.inference,
                  description="useful for when you want to generate a piece of singing voice (Optional: from User Input Text, Note and Duration Sequence) and save it to a file."
                              "If Like: Generate a piece of singing voice, the input to this tool should be \"\" since there is no User Input Text, Note and Duration Sequence ."
