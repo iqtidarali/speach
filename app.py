@@ -223,7 +223,6 @@ class ConversationBot:
 
 if __name__ == '__main__':
     bot = ConversationBot()
-
     with gr.Blocks(css="#chatbot {overflow:auto; height:500px;}") as demo:
         with gr.Row():
             openai_api_key_textbox = gr.Textbox(
