@@ -68,11 +68,19 @@ class ConversationBot:
             return state, state, gr.Audio.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
         else:
             tool = res['intermediate_steps'][0][0].tool
-            if tool == "Generate Image From User Input Text" or tool == "Generate Text From The Audio" or tool == "Transcribe speech":
+            if tool == "Generate Image From User Input Text":
+                print("======>Current memory:\n %s" % self.agent.memory)
+                # response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
+                image_filename = res['intermediate_steps'][0][1]
+                response = res['output'] + f"![](/file={image_filename})"
+                state = state + [(text, response)]
+                print("Outputs:", state)
+                return state, state, gr.Audio.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
+            elif tool == "Generate Text From The Audio" or tool == "Transcribe speech":
                 print("======>Current memory:\n %s" % self.agent.memory)
                 response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
                 image_filename = res['intermediate_steps'][0][1]
-                response = response + f"![](/file={image_filename})*{image_filename}*"
+                #response = res['output'] + f"![](/file={image_filename})*{image_filename}*"
                 state = state + [(text, response)]
                 print("Outputs:", state)
                 return state, state, gr.Audio.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
