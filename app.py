@@ -160,7 +160,7 @@ class ConversationBot:
         self.llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
         # self.t2i = T2I(device="cuda:0")
         # self.i2t = ImageCaptioning(device="cuda:0")
-        self.t2a = T2A(device="cpu")
+        self.t2a = T2A(device="cuda:0")
         self.tts = TTS(device="cpu")
         self.t2s = T2S(device="cpu")
         # self.i2a = I2A(device="cpu")
