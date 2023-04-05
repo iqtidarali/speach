@@ -156,8 +156,8 @@ class ConversationBot:
         print("===============Running inpainting =============")
         print("Inputs:", state)
         print("======>Previous memory:\n %s" % self.agent.memory)
-        inpaint = Inpaint(device="cpu")
-        new_image_filename, new_audio_filename = inpaint.predict(audio_filename, image_filename)       
+        # inpaint = Inpaint(device="cpu")
+        new_image_filename, new_audio_filename = self.inpaint.predict(audio_filename, image_filename)       
         AI_prompt = "Here are the predict audio and the mel spectrum." + f"*{new_audio_filename}*" + f"![](/file={new_image_filename})*{new_image_filename}*"
         self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
         print("======>Current memory:\n %s" % self.agent.memory)
@@ -190,7 +190,6 @@ if __name__ == '__main__':
                            'I2A': 'cuda:0',
                            'TTS': 'cpu',
                            'T2S': 'cpu',
-                           'Inpaint': 'cpu',
                            'ASR': 'cuda:0',
                            'A2T': 'cpu',
                            })
