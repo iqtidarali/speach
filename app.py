@@ -131,17 +131,17 @@ class ConversationBot:
             print("Outputs:", state)
             return state, state, txt + ' ' + audio_filename + ' ', gr.Audio.update(value=audio_filename,visible=True)
         else:
-            print("===============Running run_image =============")
-            print("Inputs:", file, state)
-            print("======>Previous memory:\n %s" % self.agent.memory)
+            # print("===============Running run_image =============")
+            # print("Inputs:", file, state)
+            # print("======>Previous memory:\n %s" % self.agent.memory)
             image_filename = os.path.join('image', str(uuid.uuid4())[0:8] + ".png")
             print("======>Auto Resize Image...")
             img = Image.open(file.name)
             width, height = img.size
             ratio = min(512 / width, 512 / height)
             width_new, height_new = (round(width * ratio), round(height * ratio))
-            width_new = int(np.round(width_new / 64.0)) * 32
-            height_new = int(np.round(height_new / 64.0)) * 32
+            width_new = int(np.round(width_new / 64.0)) * 64
+            height_new = int(np.round(height_new / 64.0)) * 64
             img = img.resize((width_new, height_new))
             img = img.convert('RGB')
             img.save(image_filename, "PNG")
@@ -155,7 +155,7 @@ class ConversationBot:
             state = state + [(f"![](/file={image_filename})*{image_filename}*", AI_prompt)]
             print(f"\nProcessed run_image, Input image: {image_filename}\nCurrent state: {state}\n"
                   f"Current Memory: {self.agent.memory.buffer}")
-            return state, state, txt + ' ' + image_filename + ' ', gr.Audio.update(visible=False)
+            return state, state, txt + f'{txt} {image_filename} ', gr.Audio.update(visible=False)
 
     def inpainting(self, state, audio_filename, image_filename):
         print("===============Running inpainting =============")
