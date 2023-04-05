@@ -272,7 +272,7 @@ class T2S:
 
     @prompts(name="Generate Singing Voice From User Input Text, Note and Duration Sequence",
              description="useful for when you want to generate a piece of singing voice (Optional: from User Input Text, Note and Duration Sequence) "
-                         "and save it to a file.""
+                         "and save it to a file."
                          "If Like: Generate a piece of singing voice, the input to this tool should be \"\" since there is no User Input Text, Note and Duration Sequence. "
                          "If Like: Generate a piece of singing voice. Text: xxx, Note: xxx, Duration: xxx. "
                          "Or Like: Generate a piece of singing voice. Text is xxx, note is xxx, duration is xxx."
