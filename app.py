@@ -140,6 +140,8 @@ class ConversationBot:
             width, height = img.size
             ratio = min(512 / width, 512 / height)
             width_new, height_new = (round(width * ratio), round(height * ratio))
+            width_new = int(np.round(width_new / 64.0)) * 64
+            height_new = int(np.round(height_new / 64.0)) * 64
             img = img.resize((width_new, height_new))
             img = img.convert('RGB')
             img.save(image_filename, "PNG")
@@ -148,7 +150,8 @@ class ConversationBot:
             self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
             print("======>Current memory:\n %s" % self.agent.memory)
             state = state + [(f"![](/file={image_filename})*{image_filename}*", AI_prompt)]
-            print("Outputs:", state)
+            print(f"\nProcessed run_image, Input image: {image_filename}\nCurrent state: {state}\n"
+                  f"Current Memory: {self.agent.memory.buffer}")
             return state, state, txt + ' ' + image_filename + ' ', gr.Audio.update(visible=False)
 
     def inpainting(self, state, audio_filename, image_filename):
@@ -207,10 +210,12 @@ if __name__ == '__main__':
         with gr.Row(visible = False) as input_raws:
             with gr.Column(scale=0.7):
                 txt = gr.Textbox(show_label=False, placeholder="Enter text and press enter, or upload an image").style(container=False)
-            with gr.Column(scale=0.15, min_width=0):
-                clear = gr.Button("Clear️")
-            with gr.Column(scale=0.15, min_width=0):
-                btn = gr.UploadButton("Upload", file_types=["image","audio"],visible=False)
+            with gr.Column(scale=0.1, min_width=0):
+                run = gr.Button("🏃‍♂️Run")
+            with gr.Column(scale=0.1, min_width=0):
+                clear = gr.Button("🔄Clear️")
+            with gr.Column(scale=0.1, min_width=0):
+                btn = gr.UploadButton("🖼️Upload", file_types=["image","audio"])
         with gr.Row():        
             with gr.Column():
                 outaudio = gr.Audio(visible=False)
