@@ -191,12 +191,14 @@ class ConversationBot:
 
 if __name__ == '__main__': 
     bot = ConversationBot({'T2I': 'cuda:0',
+                           'ImageCaptioning': 'cuda:0',
                            'T2A': 'cuda:0',
                            'I2A': 'cuda:0',
                            'TTS': 'cpu',
                            'T2S': 'cpu',
                            'ASR': 'cuda:0',
                            'A2T': 'cpu',
+                           'Inpaint': 'cuda:0'
                            })
     with gr.Blocks(css="#chatbot {overflow:auto; height:500px;}") as demo:
         with gr.Row():
