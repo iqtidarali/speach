@@ -140,8 +140,8 @@ class ConversationBot:
             width, height = img.size
             ratio = min(512 / width, 512 / height)
             width_new, height_new = (round(width * ratio), round(height * ratio))
-            width_new = int(np.round(width_new / 64.0)) * 64
-            height_new = int(np.round(height_new / 64.0)) * 64
+            width_new = int(np.round(width_new / 64.0)) * 32
+            height_new = int(np.round(height_new / 64.0)) * 32
             img = img.resize((width_new, height_new))
             img = img.convert('RGB')
             img.save(image_filename, "PNG")
@@ -190,8 +190,7 @@ class ConversationBot:
 
 
 if __name__ == '__main__': 
-    bot = ConversationBot({'TTS_OOD': 'cuda:0',
-                           'ImageCaptioning': 'cuda:0',
+    bot = ConversationBot({'ImageCaptioning': 'cuda:0',
                            'T2A': 'cuda:0',
                            'I2A': 'cuda:0',
                            'TTS': 'cpu',
