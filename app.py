@@ -240,6 +240,8 @@ if __name__ == '__main__':
         openai_api_key_textbox.submit(bot.init_agent, [openai_api_key_textbox], [input_raws])    
         txt.submit(bot.run_text, [txt, state], [chatbot, state, outaudio, show_mel, run_button])
         txt.submit(lambda: "", None, txt)
+        run.click(bot.run_text, [txt, state], [chatbot, state, outaudio, show_mel, run_button])
+        run.click(lambda: "", None, txt)
         btn.upload(bot.run_image_or_audio, [btn, state, txt], [chatbot, state, txt, outaudio])
         run_button.click(bot.inpainting, [state, outaudio, show_mel], [chatbot, state, show_mel, outaudio, run_button])
         clear.click(bot.memory.clear)
