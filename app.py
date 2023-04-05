@@ -79,7 +79,7 @@ class ConversationBot:
             tool = res['intermediate_steps'][0][0].tool
             if tool == "Generate Image From User Input Text":
                 print("======>Current memory:\n %s" % self.agent.memory)
-                # response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
+                response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
                 image_filename = res['intermediate_steps'][0][1]
                 response = res['output'] + f"![](/file={image_filename})"
                 state = state + [(text, response)]
@@ -157,7 +157,7 @@ class ConversationBot:
         print("Inputs:", state)
         print("======>Previous memory:\n %s" % self.agent.memory)
         inpaint = Inpaint(device="cpu")
-        new_image_filename, new_audio_filename = inpaint.inference(audio_filename, image_filename)       
+        new_image_filename, new_audio_filename = inpaint.predict(audio_filename, image_filename)       
         AI_prompt = "Here are the predict audio and the mel spectrum." + f"*{new_audio_filename}*" + f"![](/file={new_image_filename})*{new_image_filename}*"
         self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
         print("======>Current memory:\n %s" % self.agent.memory)
