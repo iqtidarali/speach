@@ -12,7 +12,7 @@ einops==0.3.0
 ffmpeg-python
 g2p-en==2.1.0
 google==3.0.0
-gradio==3.13.0
+gradio
 h5py
 imageio==2.9.0
 imageio-ffmpeg==0.4.2
