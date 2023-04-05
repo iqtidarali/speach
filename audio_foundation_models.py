@@ -42,6 +42,13 @@ from utils.os_utils import move_file
 import scipy.io.wavfile as wavfile
 
 
+def prompts(name, description):
+    def decorator(func):
+        func.name = name
+        func.description = description
+        return func
+
+    return decorator
 
 def initialize_model(config, ckpt, device):
     config = OmegaConf.load(config)
@@ -64,7 +71,7 @@ def initialize_model_inpaint(config, ckpt):
     sampler = DDIMSampler(model)
     return sampler
 def select_best_audio(prompt,wav_list):
-    clap_model = CLAPWrapper('text_to_audio/Make_An_Audio/useful_ckpts/CLAP/CLAP_weights_2022.pth','text_to_audio/Make_An_Audio/useful_ckpts/CLAP/config.yml',use_cuda=torch.cuda.is_available())
+    clap_model = CLAPWrapper('useful_ckpts/CLAP/CLAP_weights_2022.pth','useful_ckpts/CLAP/config.yml',use_cuda=torch.cuda.is_available())
     text_embeddings = clap_model.get_text_embeddings([prompt])
     score_list = []
     for data in wav_list:
@@ -87,6 +94,11 @@ class T2I:
         self.text_refine_gpt2_pipe = pipeline("text-generation", model=self.text_refine_model, tokenizer=self.text_refine_tokenizer, device=self.device)
         self.pipe.to(device)
 
+    @prompts(name="Generate Image From User Input Text",
+             description="useful when you want to generate an image from a user input text and save it to a file. "
+                         "like: generate an image of an object or something, or generate an image that includes some objects. "
+                         "The input to this tool should be a string, representing the text used to generate image. ")
+
     def inference(self, text):
         image_filename = os.path.join('image', str(uuid.uuid4())[0:8] + ".png")
         refined_text = self.text_refine_gpt2_pipe(text)[0]["generated_text"]
@@ -103,6 +115,13 @@ class ImageCaptioning:
         self.processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
         self.model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base").to(self.device)
 
+
+    @prompts(name="Remove Something From The Photo",
+             description="useful when you want to remove and object or something from the photo "
+                         "from its description or location. "
+                         "The input to this tool should be a comma separated string of two, "
+                         "representing the image_path and the object need to be removed. ")
+
     def inference(self, image_path):
         inputs = self.processor(Image.open(image_path), return_tensors="pt").to(self.device)
         out = self.model.generate(**inputs)
@@ -113,8 +132,14 @@ class T2A:
     def __init__(self, device):
         print("Initializing Make-An-Audio to %s" % device)
         self.device = device
-        self.sampler = initialize_model('text_to_audio/Make_An_Audio/configs/text-to-audio/txt2audio_args.yaml', 'text_to_audio/Make_An_Audio/useful_ckpts/ta40multi_epoch=000085.ckpt', device=device) 
+        self.sampler = initialize_model('configs/text-to-audio/txt2audio_args.yaml', 'useful_ckpts/ta40multi_epoch=000085.ckpt', device=device) 
         self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio/vocoder/logs/bigv16k53w',device=device)
+
+    @prompts(name="Generate Audio From User Input Text",
+             description="useful for when you want to generate an audio "
+                         "from a user input text and it saved it to a file."
+                         "The input to this tool should be a string, "
+                         "representing the text used to generate audio.")
 
     def txt2audio(self, text, seed = 55, scale = 1.5, ddim_steps = 100, n_samples = 3, W = 624, H = 80):
         SAMPLE_RATE = 16000
@@ -160,8 +185,15 @@ class I2A:
     def __init__(self, device):
         print("Initializing Make-An-Audio-Image to %s" % device)
         self.device = device
-        self.sampler = initialize_model('text_to_audio/Make_An_Audio/configs/img_to_audio/img2audio_args.yaml', 'text_to_audio/Make_An_Audio/useful_ckpts/ta54_epoch=000216.ckpt', device=device)
-        self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio/vocoder/logs/bigv16k53w',device=device)
+        self.sampler = initialize_model('text_to_audio/Make_An_Audio_img/configs/img_to_audio/img2audio_args.yaml', 'text_to_audio/Make_An_Audio_img/useful_ckpts/ta54_epoch=000216.ckpt', device=device)
+        self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio_img/vocoder/logs/bigv16k53w',device=device)
+
+    @prompts(name="Generate Audio From The Image",
+             description="useful for when you want to generate an audio "
+                         "based on an image.""
+                         "The input to this tool should be a string, "
+                         "representing the image_path. ")
+
     def img2audio(self, image, seed = 55, scale = 3, ddim_steps = 100, W = 624, H = 80):
         SAMPLE_RATE = 16000
         n_samples = 1 # only support 1 sample
@@ -205,18 +237,6 @@ class I2A:
         print(f"Processed I2a.run, image_filename: {image}, audio_filename: {audio_filename}")
         return audio_filename
 
-class TTS:
-    def __init__(self, device=None):
-        self.inferencer = TTSInference(device)
-    
-    def inference(self, text):
-        global temp_audio_filename
-        inp = {"text": text}
-        out = self.inferencer.infer_once(inp)
-        audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
-        soundfile.write(audio_filename, out, samplerate = 22050)
-        return audio_filename
-
 class T2S:
     def __init__(self, device= None):
         if device is None:
@@ -233,6 +253,15 @@ class T2S:
             'notes_duration': '0.113740 | 0.329060 | 0.287950 | 0.133480 | 0.150900 | 0.484730 | 0.242010 | 0.180820 | 0.343570 | 0.152050 | 0.266720 | 0.280310 | 0.633300 | 0.444590'
         }
 
+    @prompts(name="Generate Singing Voice From User Input Text, Note and Duration Sequence",
+             description="useful for when you want to generate a piece of singing voice (Optional: from User Input Text, Note and Duration Sequence) "
+                         "and save it to a file.""
+                         "If Like: Generate a piece of singing voice, the input to this tool should be \"\" since there is no User Input Text, Note and Duration Sequence. "
+                         "If Like: Generate a piece of singing voice. Text: xxx, Note: xxx, Duration: xxx. "
+                         "Or Like: Generate a piece of singing voice. Text is xxx, note is xxx, duration is xxx."
+                         "The input to this tool should be a comma seperated string of three, "
+                         "representing text, note and duration sequence since User Input Text, Note and Duration Sequence are all provided. ")
+
     def set_model_hparams(self):
         set_hparams(config=self.config, exp_name=self.exp_name, print_hparams=False)
         self.hp = hp
@@ -241,11 +270,13 @@ class T2S:
         self.set_model_hparams()
         val = inputs.split(",")
         key = ['text', 'notes', 'notes_duration']
-        if inputs == '' or len(val) < len(key):
+        try:
+            inp = {k: v for k, v in zip(key, val)}
+            wav = self.pipe.infer_once(inp)
+        except:
+            print('Error occurs. Generate default audio sample.\n')
             inp = self.default_inp
-        else:
-            inp = {k:v for k,v in zip(key,val)}
-        wav = self.pipe.infer_once(inp)
+            wav = self.pipe.infer_once(inp)
         wav *= 32767
         audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
         wavfile.write(audio_filename, self.hp['audio_sample_rate'], wav.astype(np.int16))
@@ -263,6 +294,13 @@ class TTS_OOD:
         self.set_model_hparams()
         self.pipe = GenerSpeechInfer(self.hp, device)
 
+    @prompts(name="Style Transfer",
+             description="useful for when you want to generate speech samples with styles "
+                         "(e.g., timbre, emotion, and prosody) derived from a reference custom voice. "
+                         "Like: Generate a speech with style transferred from this voice. The text is xxx., or speak using the voice of this audio. The text is xxx."
+                         "The input to this tool should be a comma seperated string of two, "
+                         "representing reference audio path and input text. " )
+
     def set_model_hparams(self):
         set_hparams(config=self.config, exp_name=self.exp_name, print_hparams=False)
         f0_stats_fn = f'{hp["binary_data_dir"]}/train_f0s_mean_std.npy'
@@ -278,7 +316,6 @@ class TTS_OOD:
         key = ['ref_audio', 'text']
         val = inputs.split(",")
         inp = {k: v for k, v in zip(key, val)}
-        print(inp)
         wav = self.pipe.infer_once(inp)
         wav *= 32767
         audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
@@ -291,9 +328,16 @@ class Inpaint:
     def __init__(self, device):
         print("Initializing Make-An-Audio-inpaint to %s" % device)
         self.device = device
-        self.sampler = initialize_model_inpaint('text_to_audio/Make_An_Audio/configs/inpaint/txt2audio_args.yaml', 'text_to_audio/Make_An_Audio/useful_ckpts/inpaint7_epoch00047.ckpt')
-        self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio/vocoder/logs/bigv16k53w',device=device)
+        self.sampler = initialize_model_inpaint('text_to_audio/Make_An_Audio_inpaint/configs/inpaint/txt2audio_args.yaml', 'text_to_audio/Make_An_Audio_inpaint/useful_ckpts/inpaint7_epoch00047.ckpt')
+        self.vocoder = VocoderBigVGAN('./vocoder/logs/bigv16k53w',device=device)
         self.cmap_transform = matplotlib.cm.viridis
+
+    @prompts(name="Audio Inpainting",
+             description="useful for when you want to inpaint a mel spectrum of an audio and predict this audio, "
+                         "this tool will generate a mel spectrum and you can inpaint it, receives audio_path as input. "
+                         "The input to this tool should be a string, "
+                         "representing the audio_path. " )
+
     def make_batch_sd(self, mel, mask, num_samples=1):
 
         mel = torch.from_numpy(mel)[None,None,...].to(dtype=torch.float32)
@@ -424,6 +468,13 @@ class ASR:
         print("Initializing Whisper to %s" % device)
         self.device = device
         self.model = whisper.load_model("base", device=device)
+
+    @prompts(name="Transcribe speech",
+             description="useful for when you want to know the text corresponding to a human speech, "
+                         "receives audio_path as input. "
+                         "The input to this tool should be a string, "
+                         "representing the audio_path. " )    
+
     def inference(self, audio_path):
         audio = whisper.load_audio(audio_path)
         audio = whisper.pad_or_trim(audio)
@@ -438,6 +489,13 @@ class A2T:
         print("Initializing Audio-To-Text Model to %s" % device)
         self.device = device
         self.model = AudioCapModel("audio_to_text/audiocaps_cntrstv_cnn14rnn_trm")
+
+    @prompts(name="Generate Text From The Audio",
+             description="useful for when you want to describe an audio in text, "
+                         "receives audio_path as input. "
+                         "The input to this tool should be a string, "
+                         "representing the audio_path. " )    
+
     def inference(self, audio_path):
         audio = whisper.load_audio(audio_path)
         caption_text = self.model(audio)
