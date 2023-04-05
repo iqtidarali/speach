@@ -190,7 +190,7 @@ class I2A:
 
     @prompts(name="Generate Audio From The Image",
              description="useful for when you want to generate an audio "
-                         "based on an image.""
+                         "based on an image. "
                          "The input to this tool should be a string, "
                          "representing the image_path. ")
 
@@ -235,6 +235,23 @@ class I2A:
         audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
         soundfile.write(audio_filename, result[1], samplerate = 16000)
         print(f"Processed I2a.run, image_filename: {image}, audio_filename: {audio_filename}")
+        return audio_filename
+
+class TTS:
+    def __init__(self, device=None):
+        self.inferencer = TTSInference(device)
+    
+    @prompts(name="Synthesize Speech Given the User Input Text",
+             description="useful for when you want to convert a user input text into speech audio it saved it to a file."
+                         "The input to this tool should be a string, "
+                         "representing the text used to be converted to speech.")
+
+    def inference(self, text):
+        global temp_audio_filename
+        inp = {"text": text}
+        out = self.inferencer.infer_once(inp)
+        audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
+        soundfile.write(audio_filename, out, samplerate = 22050)
         return audio_filename
 
 class T2S:
@@ -394,14 +411,6 @@ class Inpaint:
             input_wav = ori_wav[:input_len]
         mel = TRANSFORMS_16000(input_wav)
         return mel
-    def show_mel_fn(self, input_audio_path):
-        crop_len = 500 # the full mel cannot be showed due to gradio's Image bug when using tool='sketch'
-        crop_mel = self.gen_mel(input_audio_path)[:,:crop_len]
-        color_mel = self.cmap_transform(crop_mel)
-        image = Image.fromarray((color_mel*255).astype(np.uint8))
-        image_filename = os.path.join('image', str(uuid.uuid4())[0:8] + ".png")
-        image.save(image_filename)
-        return image_filename
     def inpaint(self, batch, seed, ddim_steps, num_samples=1, W=512, H=512):
         model = self.sampler.model
     
@@ -432,7 +441,7 @@ class Inpaint:
         inapint_wav = self.vocoder.vocode(inpainted)
 
         return inpainted, inapint_wav
-    def inference(self, input_audio, mel_and_mask, seed = 55, ddim_steps = 100):
+    def predict(self, input_audio, mel_and_mask, seed = 55, ddim_steps = 100):
         SAMPLE_RATE = 16000
         torch.set_grad_enabled(False)
         mel_img = Image.open(mel_and_mask['image'])
@@ -462,6 +471,14 @@ class Inpaint:
         audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
         soundfile.write(audio_filename, gen_wav, samplerate = 16000)
         return image_filename, audio_filename
+    def inference(self, input_audio_path):
+        crop_len = 500 # the full mel cannot be showed due to gradio's Image bug when using tool='sketch'
+        crop_mel = self.gen_mel(input_audio_path)[:,:crop_len]
+        color_mel = self.cmap_transform(crop_mel)
+        image = Image.fromarray((color_mel*255).astype(np.uint8))
+        image_filename = os.path.join('image', str(uuid.uuid4())[0:8] + ".png")
+        image.save(image_filename)
+        return image_filename
     
 class ASR:
     def __init__(self, device):
