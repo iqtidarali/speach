@@ -118,13 +118,13 @@ class ConversationBot:
             audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
             audio_load = whisper.load_audio(file.name)
             soundfile.write(audio_filename, audio_load, samplerate = 16000)
-            # description = self.a2t.inference(audio_filename)
-            # Human_prompt = "\nHuman: provide an audio named {}. The description is: {}. This information helps you to understand this audio, but you should use tools to finish following tasks, " \
-            #                "rather than directly imagine from my description. If you understand, say \"Received\". \n".format(audio_filename, description)
-            # AI_prompt = "Received.  "
-            # self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + 'AI: ' + AI_prompt
+            description = self.models['A2T'].inference(audio_filename)
+            Human_prompt = "\nHuman: provide an audio named {}. The description is: {}. This information helps you to understand this audio, but you should use tools to finish following tasks, " \
+                           "rather than directly imagine from my description. If you understand, say \"Received\". \n".format(audio_filename, description)
             AI_prompt = "Received.  "
-            self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
+            self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + 'AI: ' + AI_prompt
+            # AI_prompt = "Received.  "
+            # self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
             print("======>Current memory:\n %s" % self.agent.memory)
             #state = state + [(f"<audio src=audio_filename controls=controls></audio>*{audio_filename}*", AI_prompt)]
             state = state + [(f"*{audio_filename}*", AI_prompt)]
@@ -146,8 +146,11 @@ class ConversationBot:
             img = img.convert('RGB')
             img.save(image_filename, "PNG")
             print(f"Resize image form {width}x{height} to {width_new}x{height_new}")
+            description = self.models['ImageCaptioning'].inference(image_filename)
+            Human_prompt = "\nHuman: provide an audio named {}. The description is: {}. This information helps you to understand this audio, but you should use tools to finish following tasks, " \
+                           "rather than directly imagine from my description. If you understand, say \"Received\". \n".format(image_filename, description)
             AI_prompt = "Received.  "
-            self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
+            self.agent.memory.buffer = self.agent.memory.buffer + Human_prompt + 'AI: ' + AI_prompt
             print("======>Current memory:\n %s" % self.agent.memory)
             state = state + [(f"![](/file={image_filename})*{image_filename}*", AI_prompt)]
             print(f"\nProcessed run_image, Input image: {image_filename}\nCurrent state: {state}\n"
@@ -159,7 +162,7 @@ class ConversationBot:
         print("Inputs:", state)
         print("======>Previous memory:\n %s" % self.agent.memory)
         # inpaint = Inpaint(device="cpu")
-        new_image_filename, new_audio_filename = self.inpaint.predict(audio_filename, image_filename)       
+        new_image_filename, new_audio_filename = self.models['Inpaint'].predict(audio_filename, image_filename)       
         AI_prompt = "Here are the predict audio and the mel spectrum." + f"*{new_audio_filename}*" + f"![](/file={new_image_filename})*{new_image_filename}*"
         self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
         print("======>Current memory:\n %s" % self.agent.memory)
