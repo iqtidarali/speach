@@ -190,7 +190,7 @@ class ConversationBot:
 
 
 if __name__ == '__main__': 
-    bot = ConversationBot({'T2I': 'cuda:0',
+    bot = ConversationBot({'TTS_OOD': 'cuda:0',
                            'ImageCaptioning': 'cuda:0',
                            'T2A': 'cuda:0',
                            'I2A': 'cuda:0',
