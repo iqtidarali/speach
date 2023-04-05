@@ -242,7 +242,7 @@ class I2A:
 
 class TTS:
     def __init__(self, device=None):
-        self.inferencer = TTSInference(device)
+        self.model = TTSInference(device)
     
     @prompts(name="Synthesize Speech Given the User Input Text",
              description="useful for when you want to convert a user input text into speech audio it saved it to a file."
@@ -251,7 +251,7 @@ class TTS:
 
     def inference(self, text):
         inp = {"text": text}
-        out = self.inferencer.infer_once(inp)
+        out = self.model.infer_once(inp)
         audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
         soundfile.write(audio_filename, out, samplerate = 22050)
         return audio_filename
