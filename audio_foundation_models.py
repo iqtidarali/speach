@@ -71,7 +71,7 @@ def initialize_model_inpaint(config, ckpt):
     sampler = DDIMSampler(model)
     return sampler
 def select_best_audio(prompt,wav_list):
-    clap_model = CLAPWrapper('useful_ckpts/CLAP/CLAP_weights_2022.pth','useful_ckpts/CLAP/config.yml',use_cuda=torch.cuda.is_available())
+    clap_model = CLAPWrapper('text_to_audio/Make_An_Audio/useful_ckpts/CLAP/CLAP_weights_2022.pth','text_to_audio/Make_An_Audio/useful_ckpts/CLAP/config.yml',use_cuda=torch.cuda.is_available())
     text_embeddings = clap_model.get_text_embeddings([prompt])
     score_list = []
     for data in wav_list:
@@ -132,7 +132,7 @@ class T2A:
     def __init__(self, device):
         print("Initializing Make-An-Audio to %s" % device)
         self.device = device
-        self.sampler = initialize_model('configs/text-to-audio/txt2audio_args.yaml', 'useful_ckpts/ta40multi_epoch=000085.ckpt', device=device) 
+        self.sampler = initialize_model('text_to_audio/Make_An_Audio/configs/text-to-audio/txt2audio_args.yaml', 'text_to_audio/Make_An_Audio/useful_ckpts/ta40multi_epoch=000085.ckpt', device=device) 
         self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio/vocoder/logs/bigv16k53w',device=device)
 
     @prompts(name="Generate Audio From User Input Text",
@@ -185,8 +185,8 @@ class I2A:
     def __init__(self, device):
         print("Initializing Make-An-Audio-Image to %s" % device)
         self.device = device
-        self.sampler = initialize_model('text_to_audio/Make_An_Audio_img/configs/img_to_audio/img2audio_args.yaml', 'text_to_audio/Make_An_Audio_img/useful_ckpts/ta54_epoch=000216.ckpt', device=device)
-        self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio_img/vocoder/logs/bigv16k53w',device=device)
+        self.sampler = initialize_model('text_to_audio/Make_An_Audio/configs/img_to_audio/img2audio_args.yaml', 'text_to_audio/Make_An_Audio/useful_ckpts/ta54_epoch=000216.ckpt', device=device)
+        self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio/vocoder/logs/bigv16k53w',device=device)
 
     @prompts(name="Generate Audio From The Image",
              description="useful for when you want to generate an audio "
@@ -345,8 +345,8 @@ class Inpaint:
     def __init__(self, device):
         print("Initializing Make-An-Audio-inpaint to %s" % device)
         self.device = device
-        self.sampler = initialize_model_inpaint('text_to_audio/Make_An_Audio_inpaint/configs/inpaint/txt2audio_args.yaml', 'text_to_audio/Make_An_Audio_inpaint/useful_ckpts/inpaint7_epoch00047.ckpt')
-        self.vocoder = VocoderBigVGAN('./vocoder/logs/bigv16k53w',device=device)
+        self.sampler = initialize_model_inpaint('text_to_audio/Make_An_Audio/configs/inpaint/txt2audio_args.yaml', 'text_to_audio/Make_An_Audio/useful_ckpts/inpaint7_epoch00047.ckpt')
+        self.vocoder = VocoderBigVGAN('text_to_audio/Make_An_Audio/vocoder/logs/bigv16k53w',device=device)
         self.cmap_transform = matplotlib.cm.viridis
 
     @prompts(name="Audio Inpainting",
