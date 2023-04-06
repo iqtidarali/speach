@@ -95,7 +95,6 @@ class ConversationBot:
             elif tool == "Audio Inpainting":
                 audio_filename = res['intermediate_steps'][0][0].tool_input
                 image_filename = res['intermediate_steps'][0][1]
-               # self.is_visible(True)
                 print("======>Current memory:\n %s" % self.agent.memory)
                 print(res)
                 response = res['output']
