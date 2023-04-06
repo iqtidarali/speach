@@ -21,7 +21,11 @@ jieba
 kornia==0.6
 langchain==0.0.101
 librosa
+loguru
 miditoolkit==0.1.7
+mmcv==1.5.0
+mmdet==2.23.0 
+mmengine==0.7.2
 moviepy==1.0.3
 numpy==1.23.1
 omegaconf==2.1.1
@@ -62,3 +66,4 @@ uuid==1.30
 webdataset==0.2.5
 webrtcvad==2.0.10
 yapf==0.32.0
+git+https://github.com/openai/CLIP.git
