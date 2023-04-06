@@ -197,7 +197,11 @@ if __name__ == '__main__':
                            'T2S': 'cpu',
                            'ASR': 'cuda:0',
                            'A2T': 'cpu',
-                           'Inpaint': 'cuda:0'
+                           'Inpaint': 'cuda:0',
+                           'SoundDetection': 'cpu',
+                           'Binaural': 'cuda:0',
+                           'SoundExtraction': 'cuda:0',
+                           'TargetSoundDetection': 'cpu'
                            })
     with gr.Blocks(css="#chatbot {overflow:auto; height:500px;}") as demo:
         with gr.Row():
@@ -234,9 +238,10 @@ if __name__ == '__main__':
                       "Generate an audio of this image",
                       "Can you describe the audio with text?",
                       "Generate a speech with text 'here we go'",
-                      "Generate an image of a cat",
+                      "Transfer the mono audio into binaural audio",
                       "I want to inpaint this audio",
-                     # "generate a piece of singing voice. Text sequence is 小酒窝长睫毛AP是你最美的记号. Note sequence is C#4/Db4 | F#4/Gb4 | G#4/Ab4 | A#4/Bb4 F#4/Gb4 | F#4/Gb4 C#4/Db4 | C#4/Db4 | rest | C#4/Db4 | A#4/Bb4 | G#4/Ab4 | A#4/Bb4 | G#4/Ab4 | F4 | C#4/Db4. Note duration sequence is 0.407140 | 0.376190 | 0.242180 | 0.509550 0.183420 | 0.315400 0.235020 | 0.361660 | 0.223070 | 0.377270 | 0.340550 | 0.299620 | 0.344510 | 0.283770 | 0.323390 | 0.360340."
+                      "What event in this audio?",
+                      "generate a piece of singing voice. Text sequence is 小酒窝长睫毛AP是你最美的记号. Note sequence is C#4/Db4 | F#4/Gb4 | G#4/Ab4 | A#4/Bb4 F#4/Gb4 | F#4/Gb4 C#4/Db4 | C#4/Db4 | rest | C#4/Db4 | A#4/Bb4 | G#4/Ab4 | A#4/Bb4 | G#4/Ab4 | F4 | C#4/Db4. Note duration sequence is 0.407140 | 0.376190 | 0.242180 | 0.509550 0.183420 | 0.315400 0.235020 | 0.361660 | 0.223070 | 0.377270 | 0.340550 | 0.299620 | 0.344510 | 0.283770 | 0.323390 | 0.360340.",
                       ],
             inputs=txt
         )
