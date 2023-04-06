@@ -84,7 +84,7 @@ class ConversationBot:
                 print(f"\nProcessed run_text, Input text: {text}\nCurrent state: {state}\n"
                       f"Current Memory: {self.agent.memory.buffer}")
                 return state, state, gr.Audio.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
-            elif tool == "Generate Text From The Audio" or tool == "Transcribe speech":
+            elif tool == "Generate Text From The Audio" or tool == "Transcribe speech" or tool == "Target Sound Detection" or tool == "Detect The Sound Event From The Audio":
                 print("======>Current memory:\n %s" % self.agent.memory)
                 response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
                 image_filename = res['intermediate_steps'][0][1]
