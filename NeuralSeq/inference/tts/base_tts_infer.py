@@ -92,7 +92,7 @@ class BaseTTSInfer:
         input_values = self.asr_processor(audio_input, sampling_rate=sample_rate, return_tensors="pt").input_values
 
         # retrieve logits & take argmax
-        logits = self.asr_model(input_values.cuda()).logits
+        logits = self.asr_model(input_values).logits
         predicted_ids = torch.argmax(logits, dim=-1)
 
         # transcribe
