@@ -193,7 +193,6 @@ if __name__ == '__main__':
                            'T2A': 'cuda:0',
                            'I2A': 'cuda:0',
                            'TTS': 'cpu',
-                           'TTS_OOD': 'cpu',
                            'T2S': 'cpu',
                            'ASR': 'cuda:0',
                            'A2T': 'cpu',
