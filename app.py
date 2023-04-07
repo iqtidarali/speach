@@ -7,7 +7,7 @@ import gradio as gr
 
 _DESCRIPTION = '# [AudioGPT](https://github.com/AIGC-Audio/AudioGPT)'
 _DESCRIPTION += '\n<p>This is a demo to the work <a href="https://github.com/AIGC-Audio/AudioGPT" style="text-decoration: underline;" target="_blank">AudioGPT: Sending and Receiving Speech, Sing, Audio, and Talking head during chatting</a>. </p>'
-_DESCRIPTION += '\n<p>This model can only be used for non-commercial purposes. To learn more about the model, take a look at the <a href="https://huggingface.co/damo-vilab/modelscope-damo-text-to-video-synthesis" style="text-decoration: underline;" target="_blank">model card</a>.</p>'
+_DESCRIPTION += '\n<p>This model can only be used for non-commercial purposes.'
 
 
 AUDIO_CHATGPT_PREFIX = """AudioGPT
