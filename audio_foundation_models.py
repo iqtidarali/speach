@@ -212,7 +212,7 @@ class I2A:
         image = Image.open(image)
         image = self.sampler.model.cond_stage_model.preprocess(image).unsqueeze(0)
         image_embedding = self.sampler.model.cond_stage_model.forward_img(image)
-        c = image_embedding.repeat(n_samples, 1, 1)# shape:[1,77,1280],即还没有变成句子embedding，仍是每个单词的embedding
+        c = image_embedding.repeat(n_samples, 1, 1)
         shape = [self.sampler.model.first_stage_model.embed_dim, H//8, W//8]  # (z_dim, 80//2^x, 848//2^x)
         samples_ddim, _ = self.sampler.sample(S=ddim_steps,
                                             conditioning=c,
@@ -384,7 +384,7 @@ class Inpaint:
         sr, ori_wav = wavfile.read(input_audio_path)
         print("gen_mel")
         print(sr,ori_wav.shape,ori_wav)
-        ori_wav = ori_wav.astype(np.float32, order='C') / 32768.0 # order='C'是以C语言格式存储，不用管
+        ori_wav = ori_wav.astype(np.float32, order='C') / 32768.0
         if len(ori_wav.shape)==2:# stereo
             ori_wav = librosa.to_mono(ori_wav.T)# gradio load wav shape could be (wav_len,2) but librosa expects (2,wav_len)
         print(sr,ori_wav.shape,ori_wav)
@@ -405,7 +405,7 @@ class Inpaint:
         print("gen_mel_audio")
         print(sr,ori_wav.shape,ori_wav)
 
-        ori_wav = ori_wav.astype(np.float32, order='C') / 32768.0 # order='C'是以C语言格式存储，不用管
+        ori_wav = ori_wav.astype(np.float32, order='C') / 32768.0
         if len(ori_wav.shape)==2:# stereo
             ori_wav = librosa.to_mono(ori_wav.T)# gradio load wav shape could be (wav_len,2) but librosa expects (2,wav_len)
         print(sr,ori_wav.shape,ori_wav)
@@ -454,11 +454,11 @@ class Inpaint:
         torch.set_grad_enabled(False)
         mel_img = Image.open(mel_and_mask['image'])
         mask_img = Image.open(mel_and_mask["mask"])
-        show_mel = np.array(mel_img.convert("L"))/255 # 由于展示的mel只展示了一部分，所以需要重新从音频生成mel
+        show_mel = np.array(mel_img.convert("L"))/255
         mask = np.array(mask_img.convert("L"))/255
         mel_bins,mel_len = 80,848
-        input_mel = self.gen_mel_audio(input_audio)[:,:mel_len]# 由于展示的mel只展示了一部分，所以需要重新从音频生成mel
-        mask = np.pad(mask,((0,0),(0,mel_len-mask.shape[1])),mode='constant',constant_values=0)# 将mask填充到原来的mel的大小
+        input_mel = self.gen_mel_audio(input_audio)[:,:mel_len]
+        mask = np.pad(mask,((0,0),(0,mel_len-mask.shape[1])),mode='constant',constant_values=0)
         print(mask.shape,input_mel.shape)
         with torch.no_grad():
             batch = self.make_batch_sd(input_mel,mask,num_samples=1)
@@ -487,7 +487,7 @@ class Inpaint:
                          "representing the audio_path. " )
     
     def inference(self, input_audio_path):
-        crop_len = 500 # the full mel cannot be showed due to gradio's Image bug when using tool='sketch'
+        crop_len = 500
         crop_mel = self.gen_mel(input_audio_path)[:,:crop_len]
         color_mel = self.cmap_transform(crop_mel)
         image = Image.fromarray((color_mel*255).astype(np.uint8))
