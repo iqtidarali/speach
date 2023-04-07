@@ -1,0 +1,16 @@
+# JetBrains PyCharm IDE
+.idea/
+.github/
+.circleci/
+
+# Byte-compiled / optimized / DLL files
+*__pycache__/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# macOS dir files
+.DS_Store

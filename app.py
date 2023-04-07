@@ -5,13 +5,20 @@ from langchain.llms.openai import OpenAI
 from audio_foundation_models import *
 import gradio as gr
 
-AUDIO_CHATGPT_PREFIX = """Audio ChatGPT
-AUdio ChatGPT can not directly read audios, but it has a list of tools to finish different audio synthesis tasks. Each audio will have a file name formed as "audio/xxx.wav". When talking about audios, Audio ChatGPT is very strict to the file name and will never fabricate nonexistent files. 
-AUdio ChatGPT is able to use tools in a sequence, and is loyal to the tool observation outputs rather than faking the audio content and audio file name. It will remember to provide the file name from the last tool observation, if a new audio is generated.
-Human may provide Audio ChatGPT with a description. Audio ChatGPT should generate audios according to this description rather than directly imagine from memory or yourself."
+_DESCRIPTION = '# [AudioGPT](https://github.com/AIGC-Audio/AudioGPT)'
+_DESCRIPTION += '\n<p>This is a demo to the work [AudioGPT: Sending and Receiving Speech, Sing, Audio, and Talking head during chatting](https://github.com/AIGC-Audio/AudioGPT).</p>'
+_DESCRIPTION += '\n<p>This model can only be used for non-commercial purposes. To learn more about the model, take a look at the <a href="https://huggingface.co/damo-vilab/modelscope-damo-text-to-video-synthesis" style="text-decoration: underline;" target="_blank">model card</a>.</p>'
+
+
+AUDIO_CHATGPT_PREFIX = """AudioGPT
+AudioGPT can not directly read audios, but it has a list of tools to finish different speech, audio, and singing voice tasks. Each audio will have a file name formed as "audio/xxx.wav". When talking about audios, AudioGPT is very strict to the file name and will never fabricate nonexistent files. 
+AudioGPT is able to use tools in a sequence, and is loyal to the tool observation outputs rather than faking the audio content and audio file name. It will remember to provide the file name from the last tool observation, if a new audio is generated.
+Human may provide new audios to AudioGPT with a description. The description helps AudioGPT to understand this audio, but AudioGPT should use tools to finish following tasks, rather than directly imagine from the description.
+Overall, AudioGPT is a powerful audio dialogue assistant tool that can help with a wide range of tasks and provide valuable insights and information on a wide range of topics. 
+
 TOOLS:
 ------
-Audio ChatGPT  has access to the following tools:"""
+AudioGPT has access to the following tools:"""
 
 AUDIO_CHATGPT_FORMAT_INSTRUCTIONS = """To use a tool, please use the following format:
 ```
@@ -161,7 +168,7 @@ class ConversationBot:
         print("Inputs:", state)
         print("======>Previous memory:\n %s" % self.agent.memory)
         # inpaint = Inpaint(device="cpu")
-        new_image_filename, new_audio_filename = self.models['Inpaint'].predict(audio_filename, image_filename)       
+        new_image_filename, new_audio_filename = self.models['Inpaint'].predict(audio_filename, image_filename)
         AI_prompt = "Here are the predict audio and the mel spectrum." + f"*{new_audio_filename}*" + f"![](/file={new_image_filename})*{new_image_filename}*"
         self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
         print("======>Current memory:\n %s" % self.agent.memory)
@@ -188,7 +195,7 @@ class ConversationBot:
 
 
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     bot = ConversationBot({'ImageCaptioning': 'cuda:0',
                            'T2A': 'cuda:0',
                            'I2A': 'cuda:0',
@@ -203,6 +210,8 @@ if __name__ == '__main__':
                            'TargetSoundDetection': 'cpu'
                            })
     with gr.Blocks(css="#chatbot {overflow:auto; height:500px;}") as demo:
+        gr.Markdown(_DESCRIPTION)
+
         with gr.Row():
             openai_api_key_textbox = gr.Textbox(
                 placeholder="Paste your OpenAI API key here to start AudioGPT(sk-...) and press Enter ↵️",
@@ -210,8 +219,7 @@ if __name__ == '__main__':
                 lines=1,
                 type="password",
             )
-        with gr.Row():
-            gr.Markdown("## AudioGPT")
+
         chatbot = gr.Chatbot(elem_id="chatbot", label="AudioGPT")
         state = gr.State([])
         with gr.Row(visible = False) as input_raws:
