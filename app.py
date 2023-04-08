@@ -8,6 +8,8 @@ import gradio as gr
 _DESCRIPTION = '# [AudioGPT](https://github.com/AIGC-Audio/AudioGPT)'
 _DESCRIPTION += '\n<p>This is a demo to the work <a href="https://github.com/AIGC-Audio/AudioGPT" style="text-decoration: underline;" target="_blank">AudioGPT: Sending and Receiving Speech, Sing, Audio, and Talking head during chatting</a>. </p>'
 _DESCRIPTION += '\n<p>This model can only be used for non-commercial purposes.'
+if (SPACE_ID := os.getenv('SPACE_ID')) is not None:
+    _DESCRIPTION += f'\n<p>For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings. <a href="https://huggingface.co/spaces/{SPACE_ID}?duplicate=true"><img style="display: inline; margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space" /></a></p>'
 
 
 AUDIO_CHATGPT_PREFIX = """AudioGPT
