@@ -241,14 +241,17 @@ if __name__ == '__main__':
             with gr.Column():        
                 run_button = gr.Button("Predict Masked Place",visible=False)
         gr.Examples(
-            examples=["Generate an audio of a dog barking",
-                      "Generate an audio of this image",
-                      "Can you describe the audio with text?",
-                      "Generate a speech with text 'here we go'",
-                      "Transfer the mono audio into binaural audio",
-                      "I want to inpaint this audio",
-                      "What event in this audio?",
-                      "generate a piece of singing voice. Text sequence is 小酒窝长睫毛AP是你最美的记号. Note sequence is C#4/Db4 | F#4/Gb4 | G#4/Ab4 | A#4/Bb4 F#4/Gb4 | F#4/Gb4 C#4/Db4 | C#4/Db4 | rest | C#4/Db4 | A#4/Bb4 | G#4/Ab4 | A#4/Bb4 | G#4/Ab4 | F4 | C#4/Db4. Note duration sequence is 0.407140 | 0.376190 | 0.242180 | 0.509550 0.183420 | 0.315400 0.235020 | 0.361660 | 0.223070 | 0.377270 | 0.340550 | 0.299620 | 0.344510 | 0.283770 | 0.323390 | 0.360340.",
+            examples=["Generate a speech with text 'here we go'",
+                      "Transcribe this speech",
+                      "Transfer the mono speech to a binaural one",
+                      "Generate an audio of a dog barking",
+                      "Generate an audio of this uploaded image",
+                      "Give me the description of this audio",
+                      "I want to inpaint it",
+                      "What events does this audio include?",
+                      "When did the thunder happen in this audio?",
+                      "Extract the thunder event from this audio",
+                      "Generate a piece of singing voice. Text sequence is 小酒窝长睫毛AP是你最美的记号. Note sequence is C#4/Db4 | F#4/Gb4 | G#4/Ab4 | A#4/Bb4 F#4/Gb4 | F#4/Gb4 C#4/Db4 | C#4/Db4 | rest | C#4/Db4 | A#4/Bb4 | G#4/Ab4 | A#4/Bb4 | G#4/Ab4 | F4 | C#4/Db4. Note duration sequence is 0.407140 | 0.376190 | 0.242180 | 0.509550 0.183420 | 0.315400 0.235020 | 0.361660 | 0.223070 | 0.377270 | 0.340550 | 0.299620 | 0.344510 | 0.283770 | 0.323390 | 0.360340.",
                       ],
             inputs=txt
         )
