@@ -216,7 +216,7 @@ if __name__ == '__main__':
                            'SoundDetection': 'cpu',
                            'Binaural': 'cuda:0',
                            'SoundExtraction': 'cuda:0',
-                           'TargetSoundDetection': 'cpu'
+                           'TargetSoundDetection': 'cuda:0'
                            })
     with gr.Blocks(css="#chatbot {overflow:auto; height:500px;}") as demo:
         gr.Markdown(_DESCRIPTION)
