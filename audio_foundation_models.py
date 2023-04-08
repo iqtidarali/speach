@@ -556,7 +556,7 @@ class SoundDetection:
         self.model.to(device)
 
     @prompts(name="Detect The Sound Event From The Audio",
-             description="useful for when you want to know what event in the audio and the sound event start or end time, "
+             description="useful for when you want to know what event in the audio and the sound event start or end time, it will return an image "
                          "receives audio_path as input. "
                          "The input to this tool should be a string, "
                          "representing the audio_path. " )  
@@ -769,7 +769,8 @@ class TargetSoundDetection:
                          "The input to this tool should be a comma seperated string of two, "
                          "representing audio path and the text description. " ) 
     
-    def inference(self, text, audio_path):
+    def inference(self, inputs):
+        audio_path, text = inputs.split(",")[0], ','.join(inputs.split(',')[1:])
         target_emb = self.build_clip(text) # torch type
         idx = self.cal_similarity(target_emb, self.re_embeds)
         target_event = self.id_to_event[idx]
