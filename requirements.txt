@@ -67,3 +67,4 @@ webdataset==0.2.5
 webrtcvad==2.0.10
 yapf==0.32.0
 git+https://github.com/openai/CLIP.git
+#git+https://github.com/facebookresearch/pytorch3d.git
