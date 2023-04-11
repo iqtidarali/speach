@@ -515,6 +515,10 @@ class ASR:
         options = whisper.DecodingOptions()
         result = whisper.decode(self.model, mel, options)
         return result.text
+        
+    def translate_english(self, audio_path):
+        audio = self.model.transcribe(audio_path, language='English')
+        return audio['text']
 
 class A2T:
     def __init__(self, device):
