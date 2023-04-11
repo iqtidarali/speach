@@ -17,7 +17,6 @@ AudioGPT can not directly read audios, but it has a list of tools to finish diff
 AudioGPT is able to use tools in a sequence, and is loyal to the tool observation outputs rather than faking the audio content and audio file name. It will remember to provide the file name from the last tool observation, if a new audio is generated.
 Human may provide new audios to AudioGPT with a description. The description helps AudioGPT to understand this audio, but AudioGPT should use tools to finish following tasks, rather than directly imagine from the description.
 Overall, AudioGPT is a powerful audio dialogue assistant tool that can help with a wide range of tasks and provide valuable insights and information on a wide range of topics. 
-
 TOOLS:
 ------
 AudioGPT has access to the following tools:"""
@@ -58,6 +57,18 @@ def cut_dialogue_history(history_memory, keep_last_n_words = 500):
             paragraphs = paragraphs[1:]
         return '\n' + '\n'.join(paragraphs)
 
+def merge_audio(audio_path_1, audio_path_2):
+    merged_signal = []
+    sr_1, signal_1 = wavfile.read(audio_path_1)
+    sr_2, signal_2 = wavfile.read(audio_path_2)
+    merged_signal.append(signal_1)
+    merged_signal.append(signal_2)
+    merged_signal = np.hstack(merged_signal)
+    merged_signal = np.asarray(merged_signal, dtype=np.int16)
+    audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
+    wavfile.write(audio_filename, sr_2, merged_signal)
+    return audio_filename
+
 class ConversationBot:
     def __init__(self, load_dict):
         print("Initializing AudioGPT")
@@ -66,11 +77,6 @@ class ConversationBot:
         self.models = dict()
         for class_name, device in load_dict.items():
             self.models[class_name] = globals()[class_name](device=device)
-        for class_name, instance in self.models.items():
-            for e in dir(instance):
-                if e.startswith('inference'):
-                    func = getattr(instance, e)
-                    self.tools.append(Tool(name=func.name, description=func.description, func=func))
 
     def run_text(self, text, state):
         print("===============Running run_text =============")
@@ -83,7 +89,7 @@ class ConversationBot:
             response = res['output']
             state = state + [(text, response)]
             print("Outputs:", state)
-            return state, state, gr.Audio.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
+            return state, state, gr.Audio.update(visible=False), gr.Video.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
         else:
             tool = res['intermediate_steps'][0][0].tool
             if tool == "Generate Image From User Input Text":
@@ -92,14 +98,14 @@ class ConversationBot:
                 state = state + [(text, response)]
                 print(f"\nProcessed run_text, Input text: {text}\nCurrent state: {state}\n"
                       f"Current Memory: {self.agent.memory.buffer}")
-                return state, state, gr.Audio.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
+                return state, state, gr.Audio.update(visible=False), gr.Video.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
             elif tool == "Detect The Sound Event From The Audio":
                 image_filename = res['intermediate_steps'][0][1]
                 response = res['output'] + f"![](/file={image_filename})*{image_filename}*"
                 state = state + [(text, response)]
                 print(f"\nProcessed run_text, Input text: {text}\nCurrent state: {state}\n"
                       f"Current Memory: {self.agent.memory.buffer}")
-                return state, state, gr.Audio.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)        
+                return state, state, gr.Audio.update(visible=False), gr.Video.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)                
             elif tool == "Generate Text From The Audio" or tool == "Transcribe speech" or tool == "Target Sound Detection":
                 print("======>Current memory:\n %s" % self.agent.memory)
                 response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
@@ -107,22 +113,21 @@ class ConversationBot:
                 #response = res['output'] + f"![](/file={image_filename})*{image_filename}*"
                 state = state + [(text, response)]
                 print("Outputs:", state)
-                return state, state, gr.Audio.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
+                return state, state, gr.Audio.update(visible=False), gr.Video.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
             elif tool == "Audio Inpainting":
                 audio_filename = res['intermediate_steps'][0][0].tool_input
                 image_filename = res['intermediate_steps'][0][1]
                 print("======>Current memory:\n %s" % self.agent.memory)
-                print(res)
                 response = res['output']
                 state = state + [(text, response)]
                 print("Outputs:", state)
-                return state, state, gr.Audio.update(value=audio_filename,visible=True), gr.Image.update(value=image_filename,visible=True), gr.Button.update(visible=True)
+                return state, state, gr.Audio.update(value=audio_filename,visible=True), gr.Video.update(visible=False), gr.Image.update(value=image_filename,visible=True), gr.Button.update(visible=True)
             print("======>Current memory:\n %s" % self.agent.memory)
             response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
             audio_filename = res['intermediate_steps'][0][1]
             state = state + [(text, response)]
             print("Outputs:", state)
-            return state, state, gr.Audio.update(value=audio_filename,visible=True), gr.Image.update(visible=False), gr.Button.update(visible=False)
+            return state, state, gr.Audio.update(value=audio_filename,visible=True), gr.Video.update(visible=False), gr.Image.update(visible=False), gr.Button.update(visible=False)
 
     def run_image_or_audio(self, file, state, txt):
         file_type = file.name[-3:]
@@ -144,7 +149,7 @@ class ConversationBot:
             #state = state + [(f"<audio src=audio_filename controls=controls></audio>*{audio_filename}*", AI_prompt)]
             state = state + [(f"*{audio_filename}*", AI_prompt)]
             print("Outputs:", state)
-            return state, state, txt + ' ' + audio_filename + ' ', gr.Audio.update(value=audio_filename,visible=True)
+            return state, state, gr.Audio.update(value=audio_filename,visible=True), gr.Video.update(visible=False)
         else:
             # print("===============Running run_image =============")
             # print("Inputs:", file, state)
@@ -170,13 +175,69 @@ class ConversationBot:
             state = state + [(f"![](/file={image_filename})*{image_filename}*", AI_prompt)]
             print(f"\nProcessed run_image, Input image: {image_filename}\nCurrent state: {state}\n"
                   f"Current Memory: {self.agent.memory.buffer}")
-            return state, state, txt + f'{txt} {image_filename} ', gr.Audio.update(visible=False)
+            return state, state, gr.Audio.update(visible=False), gr.Video.update(visible=False)
+
+    def speech(self, speech_input, state):
+        input_audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
+        text = self.models['ASR'].translate_english(speech_input)
+        print("Inputs:", text, state)
+        print("======>Previous memory:\n %s" % self.agent.memory)
+        self.agent.memory.buffer = cut_dialogue_history(self.agent.memory.buffer, keep_last_n_words=500)
+        res = self.agent({"input": text})
+        if res['intermediate_steps'] == []:
+            print("======>Current memory:\n %s" % self.agent.memory)
+            response = res['output']
+            output_audio_filename = self.models['TTS'].inference(response)
+            state = state + [(text, response)]
+            print("Outputs:", state)
+            return gr.Audio.update(value=None), gr.Audio.update(value=output_audio_filename,visible=True), state, gr.Video.update(visible=False)
+        else:
+            tool = res['intermediate_steps'][0][0].tool
+            if tool == "Generate Image From User Input Text" or tool == "Generate Text From The Audio" or tool == "Target Sound Detection":
+                print("======>Current memory:\n %s" % self.agent.memory)
+                response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
+                output_audio_filename = self.models['TTS'].inference(res['output'])
+                state = state + [(text, response)]
+                print("Outputs:", state)
+                return gr.Audio.update(value=None), gr.Audio.update(value=output_audio_filename,visible=True), state, gr.Video.update(visible=False)
+            elif tool == "Transcribe Speech":
+                print("======>Current memory:\n %s" % self.agent.memory)
+                output_audio_filename = self.models['TTS'].inference(res['output'])
+                response = res['output']
+                state = state + [(text, response)]
+                print("Outputs:", state)
+                return gr.Audio.update(value=None), gr.Audio.update(value=output_audio_filename,visible=True), state, gr.Video.update(visible=False)
+            elif tool == "Detect The Sound Event From The Audio":
+                print("======>Current memory:\n %s" % self.agent.memory)
+                image_filename = res['intermediate_steps'][0][1]
+                output_audio_filename = self.models['TTS'].inference(res['output'])
+                response = res['output'] + f"![](/file={image_filename})*{image_filename}*"
+                state = state + [(text, response)]
+                print("Outputs:", state)
+                return gr.Audio.update(value=None), gr.Audio.update(value=output_audio_filename,visible=True), state, gr.Video.update(visible=False)   
+            elif tool == "Generate a talking human portrait video given a input Audio":
+                video_filename = res['intermediate_steps'][0][1]
+                print("======>Current memory:\n %s" % self.agent.memory)
+                response = res['output'] 
+                output_audio_filename = self.models['TTS'].inference(res['output'])
+                state = state + [(text, response)]
+                print("Outputs:", state)
+                return gr.Audio.update(value=None), gr.Audio.update(value=output_audio_filename,visible=True), state, gr.Video.update(value=video_filename,visible=True)
+            print("======>Current memory:\n %s" % self.agent.memory)
+            response = re.sub('(image/\S*png)', lambda m: f'![](/file={m.group(0)})*{m.group(0)}*', res['output'])
+            audio_filename = res['intermediate_steps'][0][1]
+            Res = "The audio file has been generated and the audio is "
+            output_audio_filename = merge_audio(self.models['TTS'].inference(Res), audio_filename)
+            print(output_audio_filename)
+            state = state + [(text, response)]
+            response = res['output'] 
+            print("Outputs:", state)
+            return gr.Audio.update(value=None), gr.Audio.update(value=output_audio_filename,visible=True), state, gr.Video.update(visible=False)
 
     def inpainting(self, state, audio_filename, image_filename):
         print("===============Running inpainting =============")
         print("Inputs:", state)
         print("======>Previous memory:\n %s" % self.agent.memory)
-        # inpaint = Inpaint(device="cpu")
         new_image_filename, new_audio_filename = self.models['Inpaint'].predict(audio_filename, image_filename)
         AI_prompt = "Here are the predict audio and the mel spectrum." + f"*{new_audio_filename}*" + f"![](/file={new_image_filename})*{new_image_filename}*"
         self.agent.memory.buffer = self.agent.memory.buffer + 'AI: ' + AI_prompt
@@ -186,21 +247,50 @@ class ConversationBot:
         return state, state, gr.Image.update(visible=False), gr.Audio.update(value=new_audio_filename, visible=True), gr.Button.update(visible=False)
     def clear_audio(self):
         return gr.Audio.update(value=None, visible=False)
+    def clear_input_audio(self):
+        return gr.Audio.update(value=None)
     def clear_image(self):
         return gr.Image.update(value=None, visible=False)
+    def clear_video(self):
+        return gr.Video.update(value=None, visible=False)
     def clear_button(self):
         return gr.Button.update(visible=False)
-    def init_agent(self, openai_api_key):
-        self.llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
-        self.agent = initialize_agent(
-            self.tools,
-            self.llm,
-            agent="conversational-react-description",
-            verbose=True,
-            memory=self.memory,
-            return_intermediate_steps=True,
-            agent_kwargs={'prefix': AUDIO_CHATGPT_PREFIX, 'format_instructions': AUDIO_CHATGPT_FORMAT_INSTRUCTIONS, 'suffix': AUDIO_CHATGPT_SUFFIX}, )
-        return gr.update(visible = True)
+
+    def init_agent(self, openai_api_key, interaction_type):
+        if interaction_type == "text":
+            for class_name, instance in self.models.items():
+                for e in dir(instance):
+                    if e.startswith('inference'):
+                        func = getattr(instance, e)
+                        self.tools.append(Tool(name=func.name, description=func.description, func=func))
+            self.llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
+            self.agent = initialize_agent(
+                self.tools,
+                self.llm,
+                agent="conversational-react-description",
+                verbose=True,
+                memory=self.memory,
+                return_intermediate_steps=True,
+                agent_kwargs={'prefix': AUDIO_CHATGPT_PREFIX, 'format_instructions': AUDIO_CHATGPT_FORMAT_INSTRUCTIONS, 'suffix': AUDIO_CHATGPT_SUFFIX}, )
+            return gr.update(visible = False), gr.update(visible = True), gr.update(visible = True), gr.update(visible = False)
+        else:
+            for class_name, instance in self.models.items():
+                if class_name != 'T2A' and class_name != 'I2A' and class_name != 'Inpaint' and class_name != 'ASR' and class_name != 'SoundDetection':
+                    for e in dir(instance):
+                        if e.startswith('inference'):
+                            func = getattr(instance, e)
+                            self.tools.append(Tool(name=func.name, description=func.description, func=func))                    
+
+            self.llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
+            self.agent = initialize_agent(
+                self.tools,
+                self.llm,
+                agent="conversational-react-description",
+                verbose=True,
+                memory=self.memory,
+                return_intermediate_steps=True,
+                agent_kwargs={'prefix': AUDIO_CHATGPT_PREFIX, 'format_instructions': AUDIO_CHATGPT_FORMAT_INSTRUCTIONS, 'suffix': AUDIO_CHATGPT_SUFFIX}, )
+            return gr.update(visible = False), gr.update(visible = False), gr.update(visible = False), gr.update(visible = True)
 
 
 
@@ -218,37 +308,50 @@ if __name__ == '__main__':
                            'SoundExtraction': 'cuda:0',
                            'TargetSoundDetection': 'cuda:0'
                            })
-    with gr.Blocks(css="#chatbot {overflow:auto; height:500px;}") as demo:
-        gr.Markdown(_DESCRIPTION)
-
+    with gr.Blocks(css="#chatbot .overflow-y-auto{height:500px}") as demo:
         with gr.Row():
+            gr.Markdown("## AudioGPT")
+        chatbot = gr.Chatbot(elem_id="chatbot", label="AudioGPT", visible=False) 
+        state = gr.State([])
+
+        with gr.Row() as select_raws:
+            with gr.Column(scale=0.7):
+                interaction_type = gr.Radio(choices=['text', 'speech'], value='text', label='Interaction Type')
             openai_api_key_textbox = gr.Textbox(
                 placeholder="Paste your OpenAI API key here to start AudioGPT(sk-...) and press Enter ↵️",
                 show_label=False,
                 lines=1,
                 type="password",
             )
-
-        chatbot = gr.Chatbot(elem_id="chatbot", label="AudioGPT")
-        state = gr.State([])
-        with gr.Row(visible = False) as input_raws:
+        with gr.Row(visible=False) as text_input_raws:
             with gr.Column(scale=0.7):
                 txt = gr.Textbox(show_label=False, placeholder="Enter text and press enter, or upload an image").style(container=False)
             with gr.Column(scale=0.1, min_width=0):
                 run = gr.Button("🏃‍♂️Run")
             with gr.Column(scale=0.1, min_width=0):
-                clear = gr.Button("🔄Clear️")
+                clear_txt = gr.Button("🔄Clear️")
             with gr.Column(scale=0.1, min_width=0):
                 btn = gr.UploadButton("🖼️Upload", file_types=["image","audio"])
-        with gr.Row():        
-            with gr.Column():
-                outaudio = gr.Audio(visible=False)
-        with gr.Row():           
-            with gr.Column():
-                show_mel = gr.Image(type="filepath",tool='sketch',visible=False)
-        with gr.Row():           
-            with gr.Column():        
-                run_button = gr.Button("Predict Masked Place",visible=False)
+
+        with gr.Row():
+            outaudio = gr.Audio(visible=False)
+        with gr.Row():
+            with gr.Column(scale=0.3, min_width=0):
+                outvideo = gr.Video(visible=False)
+        with gr.Row():
+            show_mel = gr.Image(type="filepath",tool='sketch',visible=False)
+        with gr.Row():
+            run_button = gr.Button("Predict Masked Place",visible=False)        
+
+        with gr.Row(visible=False) as speech_input_raws: 
+            with gr.Column(scale=0.7):
+                speech_input = gr.Audio(source="microphone", type="filepath", label="Input")
+            with gr.Column(scale=0.15, min_width=0):
+                submit_btn = gr.Button("🏃‍♂️Submit")
+            with gr.Column(scale=0.15, min_width=0):
+                clear_speech = gr.Button("🔄Clear️")
+            with gr.Row():
+                speech_output = gr.Audio(label="Output",visible=False)
         gr.Examples(
             examples=["Generate a speech with text 'here we go'",
                       "Transcribe this speech",
@@ -265,18 +368,27 @@ if __name__ == '__main__':
             inputs=txt
         )
 
-        openai_api_key_textbox.submit(bot.init_agent, [openai_api_key_textbox], [input_raws])    
-        txt.submit(bot.run_text, [txt, state], [chatbot, state, outaudio, show_mel, run_button])
+        openai_api_key_textbox.submit(bot.init_agent, [openai_api_key_textbox, interaction_type], [select_raws, chatbot, text_input_raws, speech_input_raws])    
+
+        txt.submit(bot.run_text, [txt, state], [chatbot, state, outaudio, outvideo, show_mel, run_button])
         txt.submit(lambda: "", None, txt)
-        run.click(bot.run_text, [txt, state], [chatbot, state, outaudio, show_mel, run_button])
+        run.click(bot.run_text, [txt, state], [chatbot, state, outaudio, outvideo, show_mel, run_button])
         run.click(lambda: "", None, txt)
-        btn.upload(bot.run_image_or_audio, [btn, state, txt], [chatbot, state, txt, outaudio])
-        run_button.click(bot.inpainting, [state, outaudio, show_mel], [chatbot, state, show_mel, outaudio, run_button])
-        clear.click(bot.memory.clear)
-        clear.click(lambda: [], None, chatbot)
-        clear.click(lambda: [], None, state)
-        clear.click(lambda:None, None, txt)
-        clear.click(bot.clear_button, None, run_button)
-        clear.click(bot.clear_image, None, show_mel)
-        clear.click(bot.clear_audio, None, outaudio)
+        btn.upload(bot.run_image_or_audio, [btn, state, txt], [chatbot, state, outaudio, outvideo])
+        run_button.click(bot.inpainting, [state, outaudio, show_mel], [chatbot, state, show_mel, outaudio, outvideo, run_button])
+        clear_txt.click(bot.memory.clear)
+        clear_txt.click(lambda: [], None, chatbot)
+        clear_txt.click(lambda: [], None, state)
+        clear_txt.click(lambda:None, None, txt)
+        clear_txt.click(bot.clear_button, None, run_button)
+        clear_txt.click(bot.clear_image, None, show_mel)
+        clear_txt.click(bot.clear_audio, None, outaudio)
+        clear_txt.click(bot.clear_video, None, outvideo)
+
+        submit_btn.click(bot.speech, [speech_input, state], [speech_input, speech_output, state, outvideo])
+        clear_speech.click(bot.clear_input_audio, None, speech_input)
+        clear_speech.click(bot.clear_audio, None, speech_output)
+        clear_speech.click(lambda: [], None, state)
+        clear_speech.click(bot.clear_video, None, outvideo)
+
         demo.launch(server_name="0.0.0.0", server_port=7860)
