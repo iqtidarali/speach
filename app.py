@@ -306,7 +306,9 @@ if __name__ == '__main__':
                            'SoundDetection': 'cpu',
                            'Binaural': 'cuda:0',
                            'SoundExtraction': 'cuda:0',
-                           'TargetSoundDetection': 'cuda:0'
+                           'TargetSoundDetection': 'cuda:0',
+                           'Speech_Enh_SC': 'cuda:0',
+                           'Speech_SS': 'cuda:0'
                            })
     with gr.Blocks(css="#chatbot .overflow-y-auto{height:500px}") as demo:
         with gr.Row():
