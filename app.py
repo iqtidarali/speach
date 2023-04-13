@@ -277,7 +277,7 @@ class ConversationBot:
             return gr.update(visible = False), gr.update(visible = True), gr.update(visible = True), gr.update(visible = False)
         else:
             for class_name, instance in self.models.items():
-                if class_name != 'T2A' and class_name != 'I2A' and class_name != 'Inpaint' and class_name != 'ASR' and class_name != 'SoundDetection':
+                if class_name != 'T2A' and class_name != 'I2A' and class_name != 'Inpaint' and class_name != 'ASR' and class_name != 'SoundDetection' and class_name != 'Speech_Enh_SC' and class_name != 'Speech_SS':
                     for e in dir(instance):
                         if e.startswith('inference'):
                             func = getattr(instance, e)
