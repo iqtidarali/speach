@@ -138,8 +138,9 @@ class ConversationBot:
             print("Inputs:", file, state)
             print("======>Previous memory:\n %s" % self.agent.memory)
             audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
-            audio_load = whisper.load_audio(file.name)
-            soundfile.write(audio_filename, audio_load, samplerate = 16000)
+            # audio_load = whisper.load_audio(file.name)
+            audio_load, sr = soundfile.read(file.name)
+            soundfile.write(audio_filename, audio_load, samplerate = sr)
             description = self.models['A2T'].inference(audio_filename)
             Human_prompt = "\nHuman: provide an audio named {}. The description is: {}. This information helps you to understand this audio, but you should use tools to finish following tasks, " \
                            "rather than directly imagine from my description. If you understand, say \"Received\". \n".format(audio_filename, description)
