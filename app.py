@@ -57,19 +57,7 @@ def cut_dialogue_history(history_memory, keep_last_n_words = 500):
             paragraphs = paragraphs[1:]
         return '\n' + '\n'.join(paragraphs)
 
-def merge_audio(audio_path_1, audio_path_2):
-    merged_signal = []
-    sr_1, signal_1 = wavfile.read(audio_path_1)
-    sr_2, signal_2 = wavfile.read(audio_path_2)
-    if sr_1 != sr_2:
-        signal_2 = librosa.resample(signal_2, sr_2, sr_1)
-    merged_signal.append(signal_1)
-    merged_signal.append(signal_2)
-    merged_signal = np.hstack(merged_signal)
-    merged_signal = np.asarray(merged_signal, dtype=np.int16)
-    audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
-    wavfile.write(audio_filename, sr_1, merged_signal)
-    return audio_filename
+
 
 class ConversationBot:
     def __init__(self, load_dict):
