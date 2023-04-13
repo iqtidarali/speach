@@ -94,7 +94,17 @@ def select_best_audio(prompt,wav_list):
     print(score_list,max_index)
     return wav_list[max_index]
 
-
+def merge_audio(audio_path_1, audio_path_2):
+    merged_signal = []
+    sr_1, signal_1 = wavfile.read(audio_path_1)
+    sr_2, signal_2 = wavfile.read(audio_path_2)
+    merged_signal.append(signal_1)
+    merged_signal.append(signal_2)
+    merged_signal = np.hstack(merged_signal)
+    merged_signal = np.asarray(merged_signal, dtype=np.int16)
+    audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
+    wavfile.write(audio_filename, sr_1, merged_signal)
+    return audio_filename
 class T2I:
     def __init__(self, device):
         print("Initializing T2I to %s" % device)
