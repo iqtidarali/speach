@@ -94,17 +94,7 @@ def select_best_audio(prompt,wav_list):
     print(score_list,max_index)
     return wav_list[max_index]
 
-def merge_audio(audio_path_1, audio_path_2):
-    merged_signal = []
-    sr_1, signal_1 = wavfile.read(audio_path_1)
-    sr_2, signal_2 = wavfile.read(audio_path_2)
-    merged_signal.append(signal_1)
-    merged_signal.append(signal_2)
-    merged_signal = np.hstack(merged_signal)
-    merged_signal = np.asarray(merged_signal, dtype=np.int16)
-    audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
-    wavfile.write(audio_filename, sr_1, merged_signal)
-    return audio_filename
+
 class T2I:
     def __init__(self, device):
         print("Initializing T2I to %s" % device)
@@ -525,10 +515,6 @@ class ASR:
         options = whisper.DecodingOptions()
         result = whisper.decode(self.model, mel, options)
         return result.text
-        
-    def translate_english(self, audio_path):
-        audio = self.model.transcribe(audio_path, language='English')
-        return audio['text']
 
 class A2T:
     def __init__(self, device):
@@ -819,96 +805,3 @@ class TargetSoundDetection:
         for i,item in enumerate(time_predictions):
             ans = ans + 'segment' + str(i+1) + ' start_time: ' + str(item['onset']) + '  end_time: ' + str(item['offset']) + '\t'
         return ans
-
-class Speech_Enh_SC:
-    """Speech Enhancement or Separation in single-channel
-    Example usage:
-        enh_model = Speech_Enh_SS("cuda")
-        enh_wav = enh_model.inference("./test_chime4_audio_M05_440C0213_PED_REAL.wav")
-    """
-    def __init__(self, device="cuda", model_name="espnet/Wangyou_Zhang_chime4_enh_train_enh_conv_tasnet_raw"):
-        self.model_name = model_name
-        self.device = device
-        print("Initializing ESPnet Enh to %s" % device)
-        self._initialize_model()
-
-    def _initialize_model(self):
-        from espnet_model_zoo.downloader import ModelDownloader
-        from espnet2.bin.enh_inference import SeparateSpeech
-
-        d = ModelDownloader()
-
-        cfg = d.download_and_unpack(self.model_name)
-        self.separate_speech = SeparateSpeech(
-            train_config=cfg["train_config"],
-            model_file=cfg["model_file"],
-            # for segment-wise process on long speech
-            segment_size=2.4,
-            hop_size=0.8,
-            normalize_segment_scale=False,
-            show_progressbar=True,
-            ref_channel=None,
-            normalize_output_wav=True,
-            device=self.device,
-        )
-        
-    @prompts(name="Speech Enhancement In Single-Channel",
-             description="useful for when you want to enhance the quality of the speech signal by reducing background noise (single-channel), "
-                         "receives audio_path as input."
-                         "The input to this tool should be a string, "
-                         "representing the audio_path. " ) 
-    
-    def inference(self, speech_path, ref_channel=0):
-        speech, sr = soundfile.read(speech_path)
-        speech = speech[:, ref_channel]
-        enh_speech = self.separate_speech(speech[None, ...], fs=sr)
-        audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
-        soundfile.write(audio_filename, enh_speech[0].squeeze(), samplerate=sr)
-        return audio_filename
-
-class Speech_SS:
-    def __init__(self, device="cuda", model_name="lichenda/wsj0_2mix_skim_noncausal"):
-        self.model_name = model_name
-        self.device = device
-        print("Initializing ESPnet SS to %s" % device)
-        self._initialize_model()
-
-    def _initialize_model(self):
-        from espnet_model_zoo.downloader import ModelDownloader
-        from espnet2.bin.enh_inference import SeparateSpeech
-
-        d = ModelDownloader()
-
-        cfg = d.download_and_unpack(self.model_name)
-        self.separate_speech = SeparateSpeech(
-            train_config=cfg["train_config"],
-            model_file=cfg["model_file"],
-            # for segment-wise process on long speech
-            segment_size=2.4,
-            hop_size=0.8,
-            normalize_segment_scale=False,
-            show_progressbar=True,
-            ref_channel=None,
-            normalize_output_wav=True,
-            device=self.device,
-        )
-
-    @prompts(name="Speech Separation",
-             description="useful for when you want to separate each speech from the speech mixture, "
-                         "receives audio_path as input."
-                         "The input to this tool should be a string, "
-                         "representing the audio_path. " ) 
-    
-    def inference(self, speech_path):
-        speech, sr = soundfile.read(speech_path)
-        enh_speech = self.separate_speech(speech[None, ...], fs=sr)
-        audio_filename = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
-        if len(enh_speech) == 1:
-            soundfile.write(audio_filename, enh_speech[0].squeeze(), samplerate=sr)
-        else:
-            audio_filename_1 = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
-            soundfile.write(audio_filename_1, enh_speech[0].squeeze(), samplerate=sr)
-            audio_filename_2 = os.path.join('audio', str(uuid.uuid4())[0:8] + ".wav")
-            soundfile.write(audio_filename_2, enh_speech[1].squeeze(), samplerate=sr)
-            audio_filename = merge_audio(audio_filename_1, audio_filename_2)
-        return audio_filename
