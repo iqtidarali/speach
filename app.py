@@ -239,7 +239,7 @@ if __name__ == '__main__':
             with gr.Column(scale=0.1, min_width=0):
                 clear = gr.Button("🔄Clear️")
             with gr.Column(scale=0.1, min_width=0):
-                btn = gr.UploadButton("🖼️Upload", file_types=["image","audio"])
+                btn = gr.UploadButton("🖼️/🎙️ Upload", file_types=["image","audio"])
         with gr.Row():        
             with gr.Column():
                 outaudio = gr.Audio(visible=False)
